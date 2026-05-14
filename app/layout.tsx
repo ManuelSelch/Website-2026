@@ -23,7 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <header className="container-page py-6 flex items-center justify-between">
           <a href="/" className="font-semibold">manuelselch.de</a>
           <nav className="flex gap-6 text-sm text-slate-300">
-            <a className="hover:text-white" href="#projects">Projekte</a>
+            <a className="hover:text-white" href="/projects">Projekte</a>
             <a className="hover:text-white" href="#about">Über mich</a>
             <a className="hover:text-white" href="#contact">Kontakt</a>
           </nav>
