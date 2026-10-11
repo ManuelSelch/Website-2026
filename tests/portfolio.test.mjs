@@ -18,7 +18,7 @@ check('homepage uses the approved English Mantine light design and correct conta
   assert.match(html, /Curiosity, turned/)
   assert.match(html, /things that work/)
   assert.match(html, /mailto:manuel@selch\.de/)
-  assert.match(html, /href="\/projects"/)
+  assert.match(html, /href="\/projects">Projects<\/a>/)
   assert.doesNotMatch(html, /selch\.dev|Hallo, ich bin|DESIGN STUDY|ILLUSTRATIVE PREVIEW/)
 })
 test(
@@ -41,6 +41,8 @@ test(
     const projects = await page('/projects')
     assert.equal(projects.status, 200)
     assert.ok(projects.html.includes(`href="/projects/${slug}"`))
+    assert.match(projects.html, />Details <span/)
+    assert.doesNotMatch(projects.html, /Read the story/)
     const detail = await page(`/projects/${slug}`)
     assert.equal(detail.status, 200)
     assert.doesNotMatch(detail.html, /Project not found|content="noindex"/)

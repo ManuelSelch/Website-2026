@@ -24,7 +24,7 @@ export function SiteHeader() {
       </Anchor>
       <Group component="nav" aria-label="Main navigation" className="main-navigation" gap={32}>
         <Anchor component={Link} href="/projects" underline="never">
-          Work
+          Projects
         </Anchor>
         <Anchor href="/#about" underline="never">
           About
@@ -202,9 +202,9 @@ export function ProjectCard({
           href={href}
           className="project-link"
           underline="never"
-          aria-label={`Read ${project.title} case study`}
+          aria-label={`Details for ${project.title}`}
         >
-          Read the story <span aria-hidden="true">↗</span>
+          Details <span aria-hidden="true">↗</span>
         </Anchor>
       </Box>
     </Paper>
