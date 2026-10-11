@@ -47,6 +47,27 @@ Only `gallery` assets are visibly displayed on the detail page. There is no stan
 
 `content` is rendered as HTML and is trusted **only because the portfolio owner controls it**. Do not give untrusted users write access or paste unreviewed third-party HTML. This does not sanitize HTML. Add a server-side allowlist sanitizer before accepting externally authored content. Use descriptive image alt text and absolute URLs for images inside article HTML.
 
+## Local Cockpit CLI
+
+The assistant prepares JSON; **you run the CLI locally**. The script does not load or display `.env.local`. Node loads that file only when you explicitly use `--env-file`. Keep it gitignored and use a dedicated role-scoped `COCKPIT_WRITE_API_KEY`; never a `NEXT_PUBLIC_` write key. Use HTTPS for non-local CMS connections.
+
+```sh
+# Requires Node 22.18+; does not change content or prove write permission:
+node --env-file=.env.local scripts/cockpit.mjs check
+
+# Create one draft from a JSON object you have reviewed:
+node --env-file=.env.local scripts/cockpit.mjs save content/projects/my-project.json
+
+# Update: include its existing _id, title and slug in the JSON:
+node --env-file=.env.local scripts/cockpit.mjs save content/projects/my-project.json --update
+```
+
+`content/projects/example.json` is a template, not real project content. Copy and replace it before importing. Fields follow the Cockpit table above; existing asset paths can be referenced in `cover` and `gallery`.
+
+**All saves force `_state: 0` (draft), even updates of published projects.** Review and publish in Cockpit afterwards. Save returns the item ID; retain it in your JSON before updating. Re-running a create without `_id` can create duplicates—there is no automatic upsert by slug. If a request times out or returns an unexpected save response, check Cockpit before retrying.
+
+The CLI has no delete, publish or asset-upload command. `npm run cockpit -- --help` works without credentials; if credentials are already exported in your shell, `npm run cockpit -- check` also works. Tests use fake credentials and mocked requests, never the real environment file.
+
 ## Verification
 
 Unit tests use Node's built-in TypeScript support (Node 22.18+ recommended):

@@ -1,0 +1,10 @@
+{
+  "title": "Example project — replace before importing",
+  "slug": "example-project",
+  "summary": "Replace with a short English project summary.",
+  "content": "<p>Replace with your reviewed project story.</p>",
+  "tags": ["Software"],
+  "featured": false,
+  "gallery": [],
+  "links": {}
+}
