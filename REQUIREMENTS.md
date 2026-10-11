@@ -15,7 +15,6 @@ Continue the existing portfolio into a reliable, English-language personal proje
 - Later: an archive index linking to preserved older website versions.
 
 ### Out of Scope
-- Implementing this plan during the planning task.
 - Multilingual support, a contact-form backend, or a new CMS.
 - Migrating every historical project automatically.
 - A full visual redesign before content and layout direction are approved.
@@ -38,15 +37,21 @@ Continue the existing portfolio into a reliable, English-language personal proje
 - Project grids, navigation, and article media must remain usable on mobile and with keyboard navigation; images must have meaningful alternative text.
 - The sitemap must include actual public page routes and published project detail routes, not fragment-only homepage sections.
 - Launch preparation must cover favicon/social assets, appropriate legal pages, configuration documentation, verification, and preservation of existing old-version URLs.
-- The visual design is undecided; compare light and dark directions through isolated mockups and obtain explicit approval before implementing a redesign.
+- Preserve the approved light revision 2 design: neutral off-white, grey-green accents, editorial serif typography, and Mantine (not Tailwind).
+- Detail pages use a manual contained-image gallery on the left and content-height cards on the right; mobile order is gallery, details, information. No standalone cover, autoplay, enlargement hint, or zoom; fullscreen keyboard navigation remains.
+- Collection covers, titles and Details links must open their project.
+- Local Cockpit CLI credentials load internally without printing secrets. Publishing requires --publish; updates require --update and an existing _id. Public verification is read-only and sends no API key.
 - A later archive page must list multiple preserved website versions by year/version and link visitors to each original site. Do not replace archived versions with redirects to new case studies.
 
 ## Assumptions
 - Historical content may be translated selectively rather than migrated wholesale; preserved website versions retain their original content and language.
-- A read-only check of the configured projects API without an API key returned HTTP 200 and an empty JSON array. Non-empty project fields, asset handling, and publication filtering remain unverified.
+- Public Cockpit reads return arrays; a legacy entries wrapper is supported. Native _state: 1 is the publication contract. Pizza Delivery Robot and Pi-Chat are published and their galleries have been verified.
+- Featured selection requires a Boolean featured field in the CMS model; entries without featured:true must not be substituted on the homepage.
+- CMS HTML is trusted owner-authored content, not sanitized; the backend must independently restrict private unpublished content.
 - Pi-Chat source: https://github.com/ManuelSelch/pi-chat. Robot source: https://manuelselch.de/2023/blog.php?id=30. BusinessToGo material still needs to be provided or identified.
 - The archive is deferred until after the core portfolio; the complete version list and URLs are not yet known.
-- The previous production-build check failed on synchronous project-detail route parameters; this has not been fixed.
+- Next.js 15 Promise-based params and CSS declarations are implemented; prior production builds, lint and unit/browser checks passed. NEXT_DIST_DIR supports isolated builds alongside development.
+- CLI and verification usage lives in docs/cockpit/README.md. Pi-Chat source JSON retains its item ID and five pinned GitHub screenshots.
 
 ## Implementation Plan
 ### 1. English and Contact Baseline
@@ -56,22 +61,22 @@ Description: Translate existing interface text, document language, metadata, loa
 Description: Update route parameters and metadata handling for Next.js 15. Verify with a successful production build and a project-route smoke test; record any independent CMS blockers rather than hiding them.
 
 ### 3. Public Cockpit Project Contract
-Description: Adapt project reads to the public read-only endpoint and array response; remove the API-key requirement from public reads. Inspect the existing collection and document/align fields, publishing rules, slug validation, and content format rather than recreating it. Verify empty-collection access and one temporary sample project, including overview, slug lookup, assets, and direct draft exclusion through the public endpoint. Do not publish placeholder content as real portfolio work.
+Description: Implemented public read-only array/legacy-wrapper normalization, native _state publication filtering, unique slugs, safe links and assets. Real published projects replace temporary examples. Verify frontend draft exclusion through tests; backend public draft confidentiality remains a launch requirement.
 
 ### 4. Reliable Project States
 Description: Following step 3, handle empty collections, unavailable CMS, unknown slugs, and loading consistently. Make cache/revalidation settings consistent and document expected content-refresh timing. Verify each state separately with integration checks.
 
 ### 5. Visual Direction Mockups
-Description: Create isolated light and dark homepage mockups with the same representative project content. Explore a light, understated direction with warm off-white, clear typography, one accent colour, and prominent project imagery alongside a refined dark alternative. Review desktop and mobile previews with the user and record explicit approval before changing the production layout. Neither direction is preselected.
+Description: Completed light and dark mockups; user approved light revision 2. Preserve mockups/portfolio as reference. No further mockup is required for the implemented detail layout, which the user explicitly authorized directly.
 
 ### 6. First English Case Studies
-Description: Prepare Pi-Chat, Autonomous Delivery Robot, and BusinessToGo as the first case studies. Use the supplied source links and user-provided material; do not invent contributions, outcomes, or client details. Add approved English summaries, role/contribution, approach, results, images, and links in Cockpit. Verify readable detail rendering, image paths, and external links. Agree on the rich-content trust/sanitization policy before publishing.
+Description: Pizza Delivery Robot and Pi-Chat are published with English content and real galleries. Pi-Chat uses five repository screenshots and its GitHub link; CLI saves retain its item ID. BusinessToGo remains pending source material and permission. Do not invent outcomes or confidential client details. Verify each published entry with the short public verification command.
 
 ### 7. Connected Homepage and Navigation
 Description: Use CMS featured-project selection on the homepage, add an all-projects link, repair cross-route About/Contact links, and return detail pages to the project overview. Verify navigation from every route and correct homepage behavior with no featured entries.
 
 ### 8. Approved Design and Accessibility
-Description: Implement the visual direction approved in step 5 around the connected homepage and real case studies. Check mobile navigation, grids, content typography, contrast, focus states, and image alternative text. Verify narrow and wide viewports and keyboard-only navigation.
+Description: Implemented approved Mantine light design, clickable collection covers and responsive detail cards/gallery. Descriptions above 180 words move below the desktop row. Fullscreen supports arrows, Escape and focus return, without zoom or enlargement hint. Verify 1280/390/320px layouts and keyboard interactions.
 
 ### 9. SEO and Launch Readiness
 Description: Add real-route sitemap entries, favicon/social assets, appropriate legal pages, setup documentation, and deployment configuration. Keep existing 2023 URLs reachable as part of the future archive. Verify production build, representative routes, metadata, published-only sitemap contents, and absence of exposed credentials before launch.
@@ -81,5 +86,5 @@ Description: After the core portfolio, gather the user's older website versions 
 
 ## Open Questions
 1. What source material, screenshots, and contribution details can we use for BusinessToGo, and is anything confidential?
-2. Which visual direction do you prefer after comparing the light and dark mockups?
-3. Later: which older website versions and URLs should the archive list?
+2. Later: which older website versions and URLs should the archive list?
+3. What is the production hosting/domain configuration, and which legal-page details should be used?
