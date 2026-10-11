@@ -163,7 +163,13 @@ export function ProjectCard({
       className={`project-card${featured ? ' featured-project' : ''}`}
       withBorder
     >
-      <Box className="project-visual">
+      <Anchor
+        component={Link}
+        href={href}
+        className="project-visual"
+        underline="never"
+        aria-label={`Open ${project.title}`}
+      >
         {cover && cover.type !== 'video' ? (
           <Image
             src={cover.path}
@@ -177,7 +183,7 @@ export function ProjectCard({
             <span>{project.title}</span>
           </Box>
         )}
-      </Box>
+      </Anchor>
       <Box className="project-info">
         <Text className="project-number">
           {String(index + 1).padStart(2, '0')} <span>/ {project.tags[0] || 'PROJECT'}</span>

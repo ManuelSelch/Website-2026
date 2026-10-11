@@ -185,6 +185,7 @@ em,
   grid-template-columns: 1.7fr 1fr;
 }
 .project-visual {
+  display: block;
   min-height: 300px;
   position: relative;
   background: var(--soft);

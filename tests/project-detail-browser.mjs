@@ -13,7 +13,17 @@ const errors = []
 page.on('pageerror', error => errors.push(error.message))
 try {
   await page.setViewportSize({ width: 1280, height: 900 })
-  await page.goto(`${base}/projects/${slug}`, { waitUntil: 'domcontentloaded' })
+  await page.goto(`${base}/projects`, { waitUntil: 'load' })
+  const coverLink = page.locator(`a.project-visual[href="/projects/${slug}"]`)
+  await coverLink.waitFor({ timeout: 5000 })
+  assert.ok(await coverLink.getAttribute('aria-label'), 'Cover link needs an accessible name')
+  await coverLink.click()
+  await page.waitForURL(`**/projects/${slug}`)
+  await page.goto(`${base}/projects`, { waitUntil: 'load' })
+  await coverLink.focus()
+  await page.keyboard.press('Enter')
+  await page.waitForURL(`**/projects/${slug}`)
+  console.log('PASS project cover opens its details with click and keyboard Enter.')
   await page
     .getByRole('heading', { name: 'Project details', exact: true })
     .waitFor({ timeout: 5000 })
