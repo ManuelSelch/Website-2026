@@ -48,6 +48,9 @@ test(
     assert.doesNotMatch(detail.html, /Project not found|content="noindex"/)
     assert.match(detail.html, /Back to projects/)
     assert.match(detail.html, /class="[^\"]*article-content/)
+    assert.doesNotMatch(detail.html, /class="[^\"]*detail-cover/)
+    assert.match(detail.html, /Project details/)
+    assert.match(detail.html, /aria-label="Project gallery"/)
   },
 )
 check('navigation targets homepage sections from the projects route', async () => {

@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { Anchor, Badge, Box, Group, Image, Text, Title } from '@mantine/core'
+import { Anchor, Badge, Box, Group, Paper, Stack, Text, Title } from '@mantine/core'
 import { getAllProjectSlugs, getProjectBySlug, assetUrlFrom } from '@/lib/projects'
+import { shouldExpandProjectDetails } from '@/lib/project-layout'
+import { ProjectGallery } from '@/components/project-gallery'
 
 export const revalidate = 60
 
@@ -47,11 +49,34 @@ const linkLabels = {
   article: 'Article',
 } as const
 
+function DetailsCard({ content }: { content: string }) {
+  if (!content) return null
+  return (
+    <Paper
+      component="section"
+      className="detail-card details-card"
+      withBorder
+      aria-labelledby="details-title"
+    >
+      <Title order={2} id="details-title">
+        Project details
+      </Title>
+      {/* Trusted owner-authored HTML only; see README.md for the content policy. */}
+      <Box className="article-content" dangerouslySetInnerHTML={{ __html: content }} />
+    </Paper>
+  )
+}
+
 export default async function ProjectPage({ params }: Props) {
   const { slug } = await params
   const project = await getProjectBySlug(slug)
   if (!project) notFound()
-  const coverUrl = assetUrlFrom(project.cover?.path)
+  const expanded = shouldExpandProjectDetails(project.content)
+  const date = project.date ? new Date(project.date) : null
+  const year = date && !Number.isNaN(date.getTime()) ? date.getUTCFullYear() : null
+  const hasInformation =
+    year !== null || project.tags.length > 0 || Object.keys(project.links).length > 0
+  const items = project.gallery.map(asset => ({ ...asset, path: assetUrlFrom(asset.path)! }))
   return (
     <Box className="page-section project-detail">
       <Anchor component={Link} href="/projects" className="back-link" underline="hover">
@@ -63,78 +88,65 @@ export default async function ProjectPage({ params }: Props) {
           {project.title}
         </Title>
         {project.summary && <Text className="page-intro">{project.summary}</Text>}
-        {project.tags.length > 0 && (
-          <Group gap={6} mb={30}>
-            {project.tags.map((tag, i) => (
-              <Badge key={`${tag}-${i}`} variant="outline" radius={3}>
-                {tag}
-              </Badge>
-            ))}
-          </Group>
-        )}
-        {coverUrl &&
-          (project.cover?.type === 'video' ? (
-            <video
-              className="detail-cover"
-              src={coverUrl}
-              controls
-              preload="metadata"
-              aria-label={`${project.title} preview`}
-            />
-          ) : (
-            <Image
-              className="detail-cover"
-              src={coverUrl}
-              alt={project.cover?.alt || `${project.title} project preview`}
-            />
-          ))}
-        {/* Trusted owner-authored HTML only; see README.md for the content policy. */}
-        {project.content && (
-          <Box className="article-content" dangerouslySetInnerHTML={{ __html: project.content }} />
-        )}
-        {project.gallery.length > 0 && (
-          <Box component="section" className="detail-section" aria-labelledby="gallery-title">
-            <Title order={2} id="gallery-title">
-              A closer look
-            </Title>
-            <Box className="gallery-grid">
-              {project.gallery.map((asset, index) => {
-                const url = assetUrlFrom(asset.path)
-                if (!url) return null
-                return asset.type === 'video' ? (
-                  <video
-                    key={index}
-                    src={url}
-                    controls
-                    preload="metadata"
-                    aria-label={asset.alt || `${project.title} video ${index + 1}`}
-                  />
-                ) : (
-                  <Image
-                    key={index}
-                    src={url}
-                    alt={asset.alt || `${project.title} image ${index + 1}`}
-                    loading="lazy"
-                  />
-                )
-              })}
-            </Box>
+        <Box className={`detail-layout${expanded ? ' expanded-details' : ''}`}>
+          <ProjectGallery key={project.slug} title={project.title} items={items} />
+          <Box className="project-sidebar">
+            {!expanded && <DetailsCard content={project.content} />}
+            {hasInformation && (
+              <Paper
+                component="section"
+                className="detail-card information-card"
+                withBorder
+                aria-labelledby="information-title"
+              >
+                <Title order={2} id="information-title">
+                  Project information
+                </Title>
+                {(year !== null || project.tags.length > 0) && (
+                  <Box component="dl" className="project-facts">
+                    {year !== null && (
+                      <Box>
+                        <dt>Year</dt>
+                        <dd>{year}</dd>
+                      </Box>
+                    )}
+                    {project.tags.length > 0 && (
+                      <Box>
+                        <dt>Topics</dt>
+                        <dd>
+                          <Group gap={6} className="project-tags">
+                            {project.tags.map((tag, i) => (
+                              <Badge key={`${tag}-${i}`} variant="outline" radius={3}>
+                                {tag}
+                              </Badge>
+                            ))}
+                          </Group>
+                        </dd>
+                      </Box>
+                    )}
+                  </Box>
+                )}
+                {Object.keys(project.links).length > 0 && (
+                  <Stack gap={12} className="project-resource-links">
+                    {Object.entries(project.links).map(([key, url]) => (
+                      <Anchor
+                        key={key}
+                        href={url}
+                        target="_blank"
+                        rel="noreferrer"
+                        underline="hover"
+                      >
+                        {linkLabels[key as keyof typeof linkLabels]}{' '}
+                        <span aria-hidden="true">↗</span>
+                      </Anchor>
+                    ))}
+                  </Stack>
+                )}
+              </Paper>
+            )}
           </Box>
-        )}
-        {Object.keys(project.links).length > 0 && (
-          <Box component="section" className="detail-section" aria-labelledby="links-title">
-            <Title order={2} id="links-title">
-              Explore the project
-            </Title>
-            <Group gap={24}>
-              {Object.entries(project.links).map(([key, url]) => (
-                <Anchor key={key} href={url} target="_blank" rel="noreferrer" underline="hover">
-                  {linkLabels[key as keyof typeof linkLabels]} ↗
-                </Anchor>
-              ))}
-            </Group>
-          </Box>
-        )}
+          {expanded && <DetailsCard content={project.content} />}
+        </Box>
       </Box>
     </Box>
   )

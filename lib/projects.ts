@@ -1,7 +1,12 @@
 import { cockpit } from './cockpit.ts'
 import type { CockpitRequestOptions } from './cockpit.ts'
 
-export type ProjectAsset = { path: string; alt?: string; type?: 'image' | 'video' }
+export type ProjectAsset = {
+  path: string
+  alt?: string
+  caption?: string
+  type?: 'image' | 'video'
+}
 export type ProjectLinks = Partial<
   Record<'website' | 'github' | 'playstore' | 'appstore' | 'article', string>
 >
@@ -31,7 +36,12 @@ function asset(value: unknown): ProjectAsset | undefined {
   const item = record(value)
   const path = text(item.path)
   if (!path || !assetUrlFrom(path)) return undefined
-  return { path, alt: text(item.alt), type: item.type === 'video' ? 'video' : 'image' }
+  return {
+    path,
+    alt: text(item.alt ?? item.altText),
+    caption: text(item.caption ?? item.description),
+    type: item.type === 'video' ? 'video' : 'image',
+  }
 }
 function normalize(value: unknown): Project | null {
   const item = record(value)

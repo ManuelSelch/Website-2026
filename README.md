@@ -29,13 +29,19 @@ The frontend uses Cockpit's built-in publication state and the following content
 | `content` | Owner-authored HTML; see trust policy below |
 | `date` | Publication date; descending project order |
 | `tags` | Array of English strings |
-| `cover` | Asset object with `path`, descriptive `alt`, and optional `type` (`image` or `video`) |
-| `gallery` | Array of asset objects |
+| `cover` | Preview asset for project cards and social metadata; not displayed separately on the details page |
+| `gallery` | Detail-page image/video assets with `path`, `alt` (or Cockpit `altText`), optional `caption` (or Cockpit `description`), and optional `type` |
 | `links` | Object with optional `website`, `github`, `playstore`, `appstore`, `article` HTTP(S) URLs |
 
 The API normally returns an array. An `entries` wrapper is also supported. Both listing and direct detail lookup exclude drafts and invalid slugs; unsafe external links are omitted. Cockpit itself must restrict its **public API** to published content if drafts contain private information—the frontend cannot prevent someone reading an unfiltered public endpoint directly.
 
 Projects without cover images get a typographic placeholder, not a simulated product screenshot. Missing featured entries show an honest empty state. API failures are distinguished from empty collections. Unknown projects show an English not-found page with `noindex`; Next.js may retain HTTP 200 for a not-found response after streaming has started.
+
+### Project detail layout
+
+The gallery occupies the left two-thirds on desktop; content-height Project details and Project information cards are stacked on the right. Descriptions longer than 180 words move below the gallery to keep a comfortable reading width. On mobile/tablet the order is gallery, details, information. Empty metadata or descriptions do not produce empty cards.
+
+Only `gallery` assets are visibly displayed on the detail page. There is no standalone cover or gallery cover fallback; social preview metadata still uses `cover`. Images are contained rather than cropped, thumbnails and arrows are manual, and no media auto-advances or autoplays. Image fullscreen viewing supports zoom/scroll, arrow keys, Escape, and focus return. Videos use native playback controls. Missing photos get a simple empty state; a one-item gallery disables its arrows.
 
 ### Content trust policy
 
@@ -61,6 +67,20 @@ The optional `tests/browser-check.mjs` checks desktop/mobile widths, the exact l
 
 ```sh
 TEST_BASE_URL=http://localhost:3000 node tests/browser-check.mjs
+```
+
+Detail-gallery interaction checks and isolated empty/single/long/video variants are available with the same Playwright setup:
+
+```sh
+TEST_BASE_URL=http://localhost:3000 TEST_PROJECT_SLUG=delivery-robot node tests/project-detail-browser.mjs
+node tests/project-detail-variants.mjs
+```
+
+The variants script starts and stops its own read-only mock CMS and isolated Next.js server; it does not modify Cockpit. It checks video selection/controls, not actual video playback. To build while a development server is running, use a separate output directory for both build and start:
+
+```sh
+NEXT_DIST_DIR=.next-verify npm run build
+NEXT_DIST_DIR=.next-verify npm start
 ```
 
 A production build also runs TypeScript checks. Mantine is pinned to version 8 to retain React 18 compatibility. Tailwind has been removed from the UI and build configuration.

@@ -130,12 +130,42 @@ test('safe asset URLs handle relative and absolute paths', () => {
   assert.equal(assetUrlFrom('https://example.com/pi.png'), 'https://example.com/pi.png')
   assert.equal(assetUrlFrom('javascript:alert(1)'), null)
 })
+test('gallery metadata accepts native Cockpit text and explicit overrides', async () => {
+  const fetch = respond([
+    {
+      ...project,
+      gallery: [
+        { path: '/first.png', altText: 'Robot side view', description: 'The prototype.' },
+        {
+          path: '/second.png',
+          alt: 'Front view',
+          altText: 'Ignored',
+          caption: 'Explicit caption',
+          description: 'Ignored',
+        },
+      ],
+    },
+  ])
+  try {
+    const [result] = await getProjects()
+    assert.equal(result.gallery[0].alt, 'Robot side view')
+    assert.equal(result.gallery[0].caption, 'The prototype.')
+    assert.equal(result.gallery[1].alt, 'Front view')
+    assert.equal(result.gallery[1].caption, 'Explicit caption')
+  } finally {
+    fetch.mock.restore()
+  }
+})
+
 test('unsafe external links and malformed optional fields are excluded', async () => {
   const fetch = respond([
     {
       ...project,
       tags: ['Software', 42],
-      gallery: [null, { path: '/photo.png', alt: 'Robot' }],
+      gallery: [
+        null,
+        { path: '/photo.png', alt: 'Robot', description: 'The navigation prototype.' },
+      ],
       links: { website: 'javascript:alert(1)', github: 'https://github.com/ManuelSelch/pi-chat' },
     },
   ])
@@ -143,6 +173,7 @@ test('unsafe external links and malformed optional fields are excluded', async (
     const [result] = await getProjects()
     assert.deepEqual(result.tags, ['Software'])
     assert.equal(result.gallery.length, 1)
+    assert.equal(result.gallery[0].caption, 'The navigation prototype.')
     assert.equal(result.links.website, undefined)
     assert.equal(result.links.github, 'https://github.com/ManuelSelch/pi-chat')
   } finally {
