@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "cockpit": "node scripts/cockpit.mjs",
+    "verify:project": "node scripts/verify-project.mjs",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "format": "prettier --write ."
   },

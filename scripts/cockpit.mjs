@@ -1,14 +1,15 @@
 #!/usr/bin/env node
 import { readFile } from 'node:fs/promises'
+import { loadLocalEnv } from './local-env.mjs'
 import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
 const usage = `Usage:
-  node --env-file=.env.local scripts/cockpit.mjs check
-  node --env-file=.env.local scripts/cockpit.mjs save project.json
-  node --env-file=.env.local scripts/cockpit.mjs save project.json --update
-  node --env-file=.env.local scripts/cockpit.mjs save project.json --publish
-  node --env-file=.env.local scripts/cockpit.mjs find pi-chat
+  npm run cockpit -- check
+  npm run cockpit -- save project.json
+  npm run cockpit -- save project.json --update
+  npm run cockpit -- save project.json --publish
+  npm run cockpit -- find pi-chat
 
 Requires COCKPIT_WRITE_API_KEY. Uses COCKPIT_URL (or NEXT_PUBLIC_COCKPIT_URL),
 falling back to http://localhost:8080. Node 22.18+ recommended.
@@ -18,7 +19,7 @@ save accepts one project JSON object with title and slug. Defaults to a draft
 Existing _id requires --update; combine --update --publish to keep it published.
 No deletion, asset upload, or automatic upsert by slug. find checks existing entries.
 check verifies read access only, not write permissions.
-The CLI does not read environment files itself; Node loads them when YOU run it.`
+The CLI loads .env.local internally without displaying it. Exported variables take precedence.`
 
 export async function run(args, dependencies = {}) {
   const env = dependencies.env || process.env
@@ -136,8 +137,13 @@ export async function run(args, dependencies = {}) {
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) {
-  run(process.argv.slice(2)).catch(error => {
-    console.error(error.message)
-    process.exitCode = 1
-  })
+  Promise.resolve()
+    .then(() => {
+      if (process.argv.length > 2 && !['--help', 'help'].includes(process.argv[2])) loadLocalEnv()
+      return run(process.argv.slice(2))
+    })
+    .catch(error => {
+      console.error(error.message)
+      process.exitCode = 1
+    })
 }
