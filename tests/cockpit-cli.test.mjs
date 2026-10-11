@@ -71,7 +71,7 @@ test('rejects invalid input, credentials and URLs before making requests', async
     }),
     /URL/,
   )
-  await assert.rejects(run(['save', 'project.json', '--publish'], f.options), /Usage/)
+  await assert.rejects(run(['save', 'project.json', '--unknown'], f.options), /Usage/)
   assert.equal(f.calls.length, 0)
 })
 test('HTTP and transport errors do not disclose response bodies or secrets', async () => {

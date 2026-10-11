@@ -1,0 +1,49 @@
+{
+  "_id": "6acb8c34d3de5cd41709f423",
+  "title": "Pi-Chat",
+  "slug": "pi-chat",
+  "summary": "A local browser interface for Pi, bringing persistent AI coding sessions, tools, and extensions into one workspace.",
+  "content": "<p>I built Pi-Chat to bring Pi into the browser without replacing its runtime. It uses the same credentials, tools, extensions, and persistent session files, while adding a visual workspace for conversations and projects.</p><h3>A workspace for ongoing work</h3><p>Project and session browsing, multiple tabs, and a folder picker make it easy to move between tasks. Streaming responses, Markdown, mathematical notation, and expandable tool cards keep both the conversation and the work behind it visible.</p><h3>Control without interrupting</h3><p>Pi-Chat supports native steering: I can send directions while a task is running, and Pi receives them after the current assistant turn. Pending messages survive browser reconnects. A command palette, slash-command argument completion, and keyboard shortcuts keep common actions close at hand.</p><h3>Making tool output readable</h3><p>File previews provide syntax highlighting and rendered Markdown; edit diffs show line numbers and additions or removals. Extension dialogs, widgets, and status labels connect the browser interface to Pi's existing extension ecosystem.</p><p>Pi-Chat runs locally and is available on GitHub. The screenshots show its home view, a coding session, mathematical rendering, command suggestions, and the light theme.</p>",
+  "tags": ["Software", "AI tools", "TypeScript"],
+  "featured": true,
+  "cover": {
+    "path": "https://raw.githubusercontent.com/ManuelSelch/pi-chat/3225bd95f5a0a24a94eb18b995c2065973dcd4cf/docs/images/pi-chat-session.png",
+    "alt": "Pi-Chat coding session with its conversation and tool output",
+    "type": "image"
+  },
+  "gallery": [
+    {
+      "path": "https://raw.githubusercontent.com/ManuelSelch/pi-chat/3225bd95f5a0a24a94eb18b995c2065973dcd4cf/docs/images/pi-chat-home.png",
+      "alt": "Pi-Chat home view for starting and finding sessions",
+      "caption": "The home view brings projects and sessions into a local browser workspace.",
+      "type": "image"
+    },
+    {
+      "path": "https://raw.githubusercontent.com/ManuelSelch/pi-chat/3225bd95f5a0a24a94eb18b995c2065973dcd4cf/docs/images/pi-chat-session.png",
+      "alt": "Pi-Chat coding session with conversation and tool cards",
+      "caption": "Streaming conversation and expandable tool output in a persistent Pi session.",
+      "type": "image"
+    },
+    {
+      "path": "https://raw.githubusercontent.com/ManuelSelch/pi-chat/3225bd95f5a0a24a94eb18b995c2065973dcd4cf/docs/images/pi-chat-latex.png",
+      "alt": "Mathematical notation rendered in a Pi-Chat conversation",
+      "caption": "Markdown and KaTeX rendering support technical conversations.",
+      "type": "image"
+    },
+    {
+      "path": "https://raw.githubusercontent.com/ManuelSelch/pi-chat/3225bd95f5a0a24a94eb18b995c2065973dcd4cf/docs/images/pi-chat-commands.png",
+      "alt": "Pi-Chat command interface",
+      "caption": "Commands are available directly from the browser interface.",
+      "type": "image"
+    },
+    {
+      "path": "https://raw.githubusercontent.com/ManuelSelch/pi-chat/3225bd95f5a0a24a94eb18b995c2065973dcd4cf/docs/images/pi-chat-session-light.png",
+      "alt": "Pi-Chat session using its light theme",
+      "caption": "The session interface in the light theme.",
+      "type": "image"
+    }
+  ],
+  "links": {
+    "github": "https://github.com/ManuelSelch/pi-chat"
+  }
+}

@@ -7,13 +7,16 @@ const usage = `Usage:
   node --env-file=.env.local scripts/cockpit.mjs check
   node --env-file=.env.local scripts/cockpit.mjs save project.json
   node --env-file=.env.local scripts/cockpit.mjs save project.json --update
+  node --env-file=.env.local scripts/cockpit.mjs save project.json --publish
+  node --env-file=.env.local scripts/cockpit.mjs find pi-chat
 
 Requires COCKPIT_WRITE_API_KEY. Uses COCKPIT_URL (or NEXT_PUBLIC_COCKPIT_URL),
 falling back to http://localhost:8080. Node 22.18+ recommended.
 
-save accepts one project JSON object with title and slug. Always saves a draft
-(_state: 0). Existing _id requires --update; this also unpublishes that item.
-No publishing, deletion, asset upload, or automatic upsert by slug.
+save accepts one project JSON object with title and slug. Defaults to a draft
+(_state: 0); --publish explicitly publishes (_state: 1).
+Existing _id requires --update; combine --update --publish to keep it published.
+No deletion, asset upload, or automatic upsert by slug. find checks existing entries.
 check verifies read access only, not write permissions.
 The CLI does not read environment files itself; Node loads them when YOU run it.`
 
@@ -26,14 +29,18 @@ export async function run(args, dependencies = {}) {
     log(usage)
     return
   }
-  const [command, file, update] = args
+  const [command, file, ...flags] = args
+  const updating = flags.includes('--update')
+  const publishing = flags.includes('--publish')
   if (
     !(
       (command === 'check' && args.length === 1) ||
+      (command === 'find' && args.length === 2 && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(file)) ||
       (command === 'save' &&
         file &&
         !file.startsWith('--') &&
-        (args.length === 2 || (args.length === 3 && update === '--update')))
+        flags.every(flag => ['--update', '--publish'].includes(flag)) &&
+        new Set(flags).size === flags.length)
     )
   ) {
     throw new Error(usage)
@@ -77,20 +84,21 @@ export async function run(args, dependencies = {}) {
     if (Object.hasOwn(data, '_id') && (typeof data._id !== 'string' || !data._id.trim())) {
       throw new Error('Existing _id must be a nonempty string.')
     }
-    if (data._id && update !== '--update')
+    if (data._id && !updating)
       throw new Error('Existing _id requires --update (saves as draft and unpublishes the item).')
-    if (update === '--update' && !data._id) throw new Error('--update requires an existing _id.')
-    data = { ...data, _state: 0 }
+    if (updating && !data._id) throw new Error('--update requires an existing _id.')
+    data = { ...data, _state: publishing ? 1 : 0 }
   }
   const url = new URL(
-    command === 'check' ? 'api/content/items/projects' : 'api/content/item/projects',
+    command !== 'save' ? 'api/content/items/projects' : 'api/content/item/projects',
     base,
   )
   if (command === 'check') url.searchParams.set('limit', '1')
+  if (command === 'find') url.searchParams.set('filter', JSON.stringify({ slug: file }))
   let response
   try {
     response = await request(url, {
-      method: command === 'check' ? 'GET' : 'POST',
+      method: command !== 'save' ? 'GET' : 'POST',
       headers: { 'api-key': key, 'Content-Type': 'application/json' },
       ...(data ? { body: JSON.stringify({ data }) } : {}),
       redirect: 'error',
@@ -106,16 +114,24 @@ export async function run(args, dependencies = {}) {
   } catch {
     throw new Error('Cockpit returned invalid JSON; check CMS before retrying a save.')
   }
-  if (command === 'check') {
+  if (command !== 'save') {
     if (!Array.isArray(result) && !Array.isArray(result?.entries))
       throw new Error('Cockpit returned an unexpected projects response.')
-    log('Projects read succeeded. Write permissions have not been tested. No content changed.')
+    if (command === 'check')
+      log('Projects read succeeded. Write permissions have not been tested. No content changed.')
+    else {
+      const entries = Array.isArray(result) ? result : result.entries
+      const matches = entries
+        .filter(item => item.slug === file)
+        .map(item => ({ _id: item._id, slug: item.slug, _state: item._state }))
+      log(JSON.stringify(matches).replaceAll(key, '[redacted]'))
+    }
   } else {
     if (typeof result?._id !== 'string')
       throw new Error('Unexpected save response; check CMS before retrying.')
     // Never print API response bodies or user-controlled content, which may contain secrets.
     const id = result._id.replaceAll(key, '[redacted]').replace(/[\r\n\x1b]/g, '')
-    log(`Project saved as draft. Item ID: ${id}`)
+    log(`Project saved as ${publishing ? 'published' : 'draft'}. Item ID: ${id}`)
   }
 }
 
