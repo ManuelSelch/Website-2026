@@ -7,9 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@mantine/core": "8.3.18",
+    "@mantine/hooks": "8.3.18",
     "next": "15.0.0",
     "react": "18.3.1",
     "react-dom": "18.3.1"
