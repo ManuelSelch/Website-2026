@@ -1,91 +1,141 @@
+import type { Metadata } from 'next'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import Image from 'next/image'
+import { Anchor, Badge, Box, Group, Image, Text, Title } from '@mantine/core'
 import { getAllProjectSlugs, getProjectBySlug, assetUrlFrom } from '@/lib/projects'
 
 export const revalidate = 60
 
+type Props = { params: Promise<{ slug: string }> }
+
 export async function generateStaticParams() {
   try {
-    const slugs = await getAllProjectSlugs(100)
-    return slugs.map(slug => ({ slug }))
+    return (await getAllProjectSlugs()).map(slug => ({ slug }))
   } catch {
-    // fallback to on-demand rendering
     return []
   }
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const project = await getProjectBySlug(params.slug)
-  if (!project) return { title: 'Projekt nicht gefunden' }
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params
+  let project
+  try {
+    project = await getProjectBySlug(slug)
+  } catch {
+    return { title: 'Project unavailable', robots: { index: false } }
+  }
+  if (!project) return { title: 'Project not found', robots: { index: false } }
+  const cover = project.cover?.type !== 'video' ? assetUrlFrom(project.cover?.path) : null
   return {
-    title: `${project.title} — Projekt` ,
-    description: project.summary ?? '',
+    title: project.title,
+    description: project.summary,
     openGraph: {
       title: project.title,
-      description: project.summary ?? '',
-      images: project.cover?.path ? [assetUrlFrom(project.cover.path)!] : [],
+      description: project.summary,
+      images: cover ? [cover] : [],
       type: 'article',
+      url: `/projects/${slug}`,
     },
   }
 }
 
-export default async function ProjectPage({ params }: { params: { slug: string } }) {
-  const project = await getProjectBySlug(params.slug)
+const linkLabels = {
+  website: 'Website',
+  github: 'GitHub',
+  playstore: 'Play Store',
+  appstore: 'App Store',
+  article: 'Article',
+} as const
+
+export default async function ProjectPage({ params }: Props) {
+  const { slug } = await params
+  const project = await getProjectBySlug(slug)
   if (!project) notFound()
-
-  const coverUrl = assetUrlFrom(project.cover?.path || undefined)
-
+  const coverUrl = assetUrlFrom(project.cover?.path)
   return (
-    <div className="container-page py-10">
-      <a href="/" className="text-sm text-slate-300 hover:text-white">← Zurück</a>
-      <article className="mt-6">
-        <h1 className="text-3xl md:text-4xl font-bold">{project.title}</h1>
-        {project.summary && (
-          <p className="mt-2 text-slate-300 max-w-2xl">{project.summary}</p>
+    <Box className="page-section project-detail">
+      <Anchor component={Link} href="/projects" className="back-link" underline="hover">
+        ← Back to projects
+      </Anchor>
+      <Box component="article">
+        <Text className="eyebrow">{project.tags[0] || 'PROJECT CASE STUDY'}</Text>
+        <Title order={1} className="page-title">
+          {project.title}
+        </Title>
+        {project.summary && <Text className="page-intro">{project.summary}</Text>}
+        {project.tags.length > 0 && (
+          <Group gap={6} mb={30}>
+            {project.tags.map((tag, i) => (
+              <Badge key={`${tag}-${i}`} variant="outline" radius={3}>
+                {tag}
+              </Badge>
+            ))}
+          </Group>
         )}
-
-        {coverUrl && (
-          <div className="mt-6 overflow-hidden rounded-xl border border-white/10 bg-white/5">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={coverUrl} alt={project.title} className="w-full h-auto object-cover" />
-          </div>
-        )}
-
-        {/* Content (supports simple HTML from Cockpit) */}
+        {coverUrl &&
+          (project.cover?.type === 'video' ? (
+            <video
+              className="detail-cover"
+              src={coverUrl}
+              controls
+              preload="metadata"
+              aria-label={`${project.title} preview`}
+            />
+          ) : (
+            <Image
+              className="detail-cover"
+              src={coverUrl}
+              alt={project.cover?.alt || `${project.title} project preview`}
+            />
+          ))}
+        {/* Trusted owner-authored HTML only; see README.md for the content policy. */}
         {project.content && (
-          <div className="prose prose-invert mt-8 max-w-none" dangerouslySetInnerHTML={{ __html: project.content }} />
+          <Box className="article-content" dangerouslySetInnerHTML={{ __html: project.content }} />
         )}
-
-        {/* Gallery */}
-        {project.gallery && project.gallery.length > 0 && (
-          <section className="mt-10">
-            <h2 className="text-xl font-semibold mb-4">Bilder</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-              {project.gallery.map((g, i) => {
-                const url = assetUrlFrom(g.path)
+        {project.gallery.length > 0 && (
+          <Box component="section" className="detail-section" aria-labelledby="gallery-title">
+            <Title order={2} id="gallery-title">
+              A closer look
+            </Title>
+            <Box className="gallery-grid">
+              {project.gallery.map((asset, index) => {
+                const url = assetUrlFrom(asset.path)
                 if (!url) return null
-                return (
-                  <img key={i} src={url} alt={`Bild ${i+1}`} className="rounded-lg border border-white/10" />
+                return asset.type === 'video' ? (
+                  <video
+                    key={index}
+                    src={url}
+                    controls
+                    preload="metadata"
+                    aria-label={asset.alt || `${project.title} video ${index + 1}`}
+                  />
+                ) : (
+                  <Image
+                    key={index}
+                    src={url}
+                    alt={asset.alt || `${project.title} image ${index + 1}`}
+                    loading="lazy"
+                  />
                 )
               })}
-            </div>
-          </section>
+            </Box>
+          </Box>
         )}
-
-        {/* Links */}
-        {project.links && (
-          <section className="mt-10">
-            <h2 className="text-xl font-semibold mb-3">Links</h2>
-            <div className="flex flex-wrap gap-3">
-              {project.links.website && <a className="btn-primary" href={project.links.website} target="_blank" rel="noreferrer">Website</a>}
-              {project.links.github && <a className="btn-primary" href={project.links.github} target="_blank" rel="noreferrer">GitHub</a>}
-              {project.links.playstore && <a className="btn-primary" href={project.links.playstore} target="_blank" rel="noreferrer">Play Store</a>}
-              {project.links.appstore && <a className="btn-primary" href={project.links.appstore} target="_blank" rel="noreferrer">App Store</a>}
-              {project.links.article && <a className="btn-primary" href={project.links.article} target="_blank" rel="noreferrer">Artikel</a>}
-            </div>
-          </section>
+        {Object.keys(project.links).length > 0 && (
+          <Box component="section" className="detail-section" aria-labelledby="links-title">
+            <Title order={2} id="links-title">
+              Explore the project
+            </Title>
+            <Group gap={24}>
+              {Object.entries(project.links).map(([key, url]) => (
+                <Anchor key={key} href={url} target="_blank" rel="noreferrer" underline="hover">
+                  {linkLabels[key as keyof typeof linkLabels]} ↗
+                </Anchor>
+              ))}
+            </Group>
+          </Box>
         )}
-      </article>
-    </div>
+      </Box>
+    </Box>
   )
 }

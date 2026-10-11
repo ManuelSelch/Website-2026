@@ -1,8 +1,15 @@
 import type { MetadataRoute } from 'next'
+import { getAllProjectSlugs } from '@/lib/projects'
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export const revalidate = 60
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = 'https://manuelselch.de'
-  const routes = ['', '/#projects', '/#about', '/#contact']
-  const now = new Date()
-  return routes.map((p) => ({ url: `${base}${p}`, lastModified: now }))
+  const routes = ['', '/projects']
+  try {
+    routes.push(...(await getAllProjectSlugs()).map(slug => `/projects/${slug}`))
+  } catch {
+    // Keep the core routes available while Cockpit is unavailable.
+  }
+  return routes.map(path => ({ url: `${base}${path}` }))
 }

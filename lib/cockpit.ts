@@ -1,5 +1,6 @@
 // Public, read-only Cockpit content client. No API key is required or sent.
-const COCKPIT_URL = process.env.COCKPIT_URL || process.env.NEXT_PUBLIC_COCKPIT_URL || 'http://localhost:8080'
+const COCKPIT_URL =
+  process.env.COCKPIT_URL || process.env.NEXT_PUBLIC_COCKPIT_URL || 'http://localhost:8080'
 
 export interface CockpitRequestOptions {
   filter?: Record<string, unknown>
@@ -36,7 +37,9 @@ export class CockpitClient {
     if (/^[a-z][a-z\d+.-]*:/i.test(path) || path.startsWith('//')) return null
     const relative = path.replace(/^\/+/, '')
     if (relative.split('/').includes('..')) return null
-    const storagePath = relative.startsWith('storage/uploads/') ? relative : `storage/uploads/${relative}`
+    const storagePath = relative.startsWith('storage/uploads/')
+      ? relative
+      : `storage/uploads/${relative}`
     return `${this.baseUrl}/${storagePath}`
   }
 }

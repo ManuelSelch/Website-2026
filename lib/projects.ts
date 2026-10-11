@@ -2,7 +2,9 @@ import { cockpit } from './cockpit.ts'
 import type { CockpitRequestOptions } from './cockpit.ts'
 
 export type ProjectAsset = { path: string; alt?: string; type?: 'image' | 'video' }
-export type ProjectLinks = Partial<Record<'website' | 'github' | 'playstore' | 'appstore' | 'article', string>>
+export type ProjectLinks = Partial<
+  Record<'website' | 'github' | 'playstore' | 'appstore' | 'article', string>
+>
 export type Project = {
   _id?: string
   title: string
@@ -18,7 +20,9 @@ export type Project = {
 }
 
 function record(value: unknown): Record<string, unknown> {
-  return value && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : {}
+  return value && typeof value === 'object' && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : {}
 }
 function text(value: unknown): string {
   return typeof value === 'string' ? value : ''
@@ -40,7 +44,9 @@ function normalize(value: unknown): Project | null {
     const url = text(sourceLinks[key])
     try {
       if (['http:', 'https:'].includes(new URL(url).protocol)) links[key] = url
-    } catch { /* Omit missing or unsafe external links. */ }
+    } catch {
+      /* Omit missing or unsafe external links. */
+    }
   }
   const gallery = item.gallery ?? item.images
   return {
@@ -50,9 +56,13 @@ function normalize(value: unknown): Project | null {
     summary: text(item.summary ?? item.subtitle),
     content: text(item.content ?? item.body ?? item.html),
     date: text(item.date ?? item.publishedAt) || undefined,
-    tags: Array.isArray(item.tags) ? item.tags.filter((tag): tag is string => typeof tag === 'string') : [],
+    tags: Array.isArray(item.tags)
+      ? item.tags.filter((tag): tag is string => typeof tag === 'string')
+      : [],
     cover: asset(item.cover ?? item.hero),
-    gallery: Array.isArray(gallery) ? gallery.map(asset).filter((image): image is ProjectAsset => !!image) : [],
+    gallery: Array.isArray(gallery)
+      ? gallery.map(asset).filter((image): image is ProjectAsset => !!image)
+      : [],
     links,
     featured: item.featured === true,
   }
