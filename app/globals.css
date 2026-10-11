@@ -678,11 +678,6 @@ em,
   max-width: none;
   object-fit: contain;
 }
-.lightbox-image[data-zoomed='true'] {
-  width: 200%;
-  height: auto;
-  max-width: none;
-}
 .lightbox-toolbar {
   margin-top: 12px;
 }

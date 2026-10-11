@@ -1,28 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import {
-  ActionIcon,
-  Box,
-  Button,
-  Group,
-  Image,
-  Modal,
-  Paper,
-  Text,
-  UnstyledButton,
-} from '@mantine/core'
+import { ActionIcon, Box, Group, Image, Modal, Paper, Text, UnstyledButton } from '@mantine/core'
 import type { ProjectAsset } from '@/lib/projects'
 
 export function ProjectGallery({ title, items }: { title: string; items: ProjectAsset[] }) {
   const [index, setIndex] = useState(0)
   const [opened, setOpened] = useState(false)
-  const [zoomed, setZoomed] = useState(false)
   const current = items[index] || items[0]
-  const select = (next: number) => {
-    setIndex(next)
-    setZoomed(false)
-  }
+  const select = (next: number) => setIndex(next)
   const move = (direction: number) => {
     if (items.length > 1) select((index + direction + items.length) % items.length)
   }
@@ -59,10 +45,12 @@ export function ProjectGallery({ title, items }: { title: string; items: Project
               </UnstyledButton>
             )}
           </Paper>
-          <Group className="gallery-controls" justify="space-between" wrap="nowrap">
-            <Text size="xs" c="dimmed">
-              {current.type === 'video' ? 'Play at your own pace' : 'Click the image to enlarge'}
-            </Text>
+          <Group className="gallery-controls" justify="flex-end" wrap="nowrap">
+            {current.type === 'video' && (
+              <Text size="xs" c="dimmed" mr="auto">
+                Play at your own pace
+              </Text>
+            )}
             <Group gap={12} wrap="nowrap">
               <ActionIcon
                 variant="subtle"
@@ -107,10 +95,7 @@ export function ProjectGallery({ title, items }: { title: string; items: Project
           {current.caption && <Text className="gallery-caption">{current.caption}</Text>}
           <Modal
             opened={opened}
-            onClose={() => {
-              setOpened(false)
-              setZoomed(false)
-            }}
+            onClose={() => setOpened(false)}
             fullScreen
             title={`${title} — Gallery`}
             closeButtonProps={{ 'aria-label': 'Close gallery' }}
@@ -124,7 +109,7 @@ export function ProjectGallery({ title, items }: { title: string; items: Project
               }
             }}
           >
-            <Box className="lightbox-viewport" data-zoomed={zoomed || undefined}>
+            <Box className="lightbox-viewport">
               {current.type === 'video' ? (
                 <video
                   key={current.path}
@@ -134,12 +119,7 @@ export function ProjectGallery({ title, items }: { title: string; items: Project
                   aria-label={current.alt || `${title} video ${index + 1}`}
                 />
               ) : (
-                <Image
-                  className="lightbox-image"
-                  src={current.path}
-                  alt={alt}
-                  data-zoomed={zoomed ? 'true' : 'false'}
-                />
+                <Image className="lightbox-image" src={current.path} alt={alt} />
               )}
             </Box>
             <Group className="lightbox-toolbar" justify="space-between">
@@ -166,16 +146,6 @@ export function ProjectGallery({ title, items }: { title: string; items: Project
                   →
                 </ActionIcon>
               </Group>
-              {current.type !== 'video' && (
-                <Button
-                  variant="outline"
-                  size="xs"
-                  aria-pressed={zoomed}
-                  onClick={() => setZoomed(value => !value)}
-                >
-                  {zoomed ? 'Zoom out' : 'Zoom in'}
-                </Button>
-              )}
             </Group>
             <Text size="sm" c="dimmed" className="lightbox-caption">
               {current.caption || alt}

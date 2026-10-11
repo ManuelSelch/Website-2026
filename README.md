@@ -41,7 +41,7 @@ Projects without cover images get a typographic placeholder, not a simulated pro
 
 The gallery occupies the left two-thirds on desktop; content-height Project details and Project information cards are stacked on the right. Descriptions longer than 180 words move below the gallery to keep a comfortable reading width. On mobile/tablet the order is gallery, details, information. Empty metadata or descriptions do not produce empty cards.
 
-Only `gallery` assets are visibly displayed on the detail page. There is no standalone cover or gallery cover fallback; social preview metadata still uses `cover`. Images are contained rather than cropped, thumbnails and arrows are manual, and no media auto-advances or autoplays. Image fullscreen viewing supports zoom/scroll, arrow keys, Escape, and focus return. Videos use native playback controls. Missing photos get a simple empty state; a one-item gallery disables its arrows.
+Only `gallery` assets are visibly displayed on the detail page. There is no standalone cover or gallery cover fallback; social preview metadata still uses `cover`. Images are contained rather than cropped, thumbnails and arrows are manual, and no media auto-advances or autoplays. Image fullscreen viewing keeps the full image contained, with arrow keys, Escape, and focus return; there is no enlargement hint or zoom control. Videos use native playback controls. Missing photos get a simple empty state; a one-item gallery disables its arrows.
 
 ### Content trust policy
 

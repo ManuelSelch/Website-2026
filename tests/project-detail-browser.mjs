@@ -18,6 +18,7 @@ try {
     .getByRole('heading', { name: 'Project details', exact: true })
     .waitFor({ timeout: 5000 })
   assert.equal(await page.locator('.detail-cover').count(), 0)
+  assert.equal(await page.getByText('Click the image to enlarge', { exact: true }).count(), 0)
   const gallery = page.getByRole('region', { name: 'Project gallery' })
   const sidebar = page.locator('.project-sidebar')
   const left = await gallery.boundingBox()
@@ -46,20 +47,11 @@ try {
   await gallery.getByRole('button', { name: 'Open image fullscreen' }).click()
   const dialog = page.getByRole('dialog')
   await dialog.waitFor()
-  await page.getByRole('button', { name: 'Zoom in', exact: true }).click()
-  await page.waitForFunction(
-    () => document.querySelector('.lightbox-image')?.getAttribute('data-zoomed') === 'true',
-  )
-  assert.equal(await dialog.locator('.lightbox-image').getAttribute('data-zoomed'), 'true')
-  assert.ok(
-    await dialog
-      .locator('.lightbox-viewport')
-      .evaluate(element => element.scrollWidth > element.clientWidth),
-    'Zoomed image must be pannable',
-  )
-  await page.getByRole('button', { name: 'Zoom out', exact: true }).click()
-  await page.waitForFunction(
-    () => document.querySelector('.lightbox-image')?.getAttribute('data-zoomed') === 'false',
+  assert.equal(await dialog.getByRole('button', { name: /^Zoom (in|out)$/ }).count(), 0)
+  assert.equal(await dialog.locator('[data-zoomed]').count(), 0)
+  assert.equal(
+    await dialog.locator('.lightbox-image').evaluate(img => getComputedStyle(img).objectFit),
+    'contain',
   )
   await page.screenshot({ path: path.join(os.tmpdir(), 'manuel-project-gallery-fullscreen.png') })
   const lightboxSrc = await dialog.locator('img.lightbox-image').getAttribute('src')
@@ -79,7 +71,7 @@ try {
   await dialog.waitFor({ state: 'hidden' })
   assert.equal(await page.locator(':focus').getAttribute('aria-label'), 'Open image fullscreen')
   console.log(
-    'PASS desktop columns, content-height cards, thumbnails, no autoplay, image fitting, fullscreen, zoom, keyboard navigation, Escape and focus return.',
+    'PASS desktop columns, content-height cards, thumbnails, no autoplay, image fitting, fullscreen without zoom or hint, keyboard navigation, Escape and focus return.',
   )
   for (const width of [1280, 390, 320]) {
     await page.setViewportSize({ width, height: 900 })
