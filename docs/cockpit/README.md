@@ -19,9 +19,9 @@ npm run cockpit -- save content/projects/my-project.json --update
 
 `content/projects/example.json` is a template, not real project content. Copy and replace it before importing. Fields follow the [Cockpit project fields table](../../README.md#cockpit-project-fields); existing asset paths can be referenced in `cover` and `gallery`.
 
-Saves default to `_state: 0` (draft), even updates of published projects. Add **`--publish`** to explicitly save `_state: 1`; use `--update --publish` for a published update. Check for an existing entry first with `npm run cockpit -- find pi-chat`. The reviewed Pi-Chat entry is in `content/projects/pi-chat.json`; its five screenshots use pinned public GitHub URLs (not uploaded Cockpit assets). Save returns the item ID; retain it in your JSON before updating. Re-running a create without `_id` can create duplicates—there is no automatic upsert by slug. If a request times out or returns an unexpected save response, check Cockpit before retrying.
+Saves default to `_state: 0` (draft), even updates of published projects. Add **`--publish`** to explicitly save `_state: 1`; use `--update --publish` for a published update. Check for an existing entry first with `npm run cockpit -- find pi-chat`. The reviewed Pi-Chat entry is in `content/projects/pi-chat.json`; its five screenshots currently use pinned public GitHub URLs, not native Cockpit assets. They must be replaced with uploaded asset objects to display correctly in Cockpit's asset editor. Save returns the item ID; retain it in your JSON before updating. Re-running a create without `_id` can create duplicates—there is no automatic upsert by slug. If a request times out or returns an unexpected save response, check Cockpit before retrying.
 
-The CLI has no delete or asset-upload command. `npm run cockpit -- --help` works without loading credentials. Tests use fake credentials and mocked requests, never the real environment file.
+The CLI has no delete command. Native asset uploads require the custom endpoint: see [asset-upload installation and usage](UPLOAD.md). `npm run cockpit -- --help` works without loading credentials. Tests use fake credentials and mocked requests, never the real environment file.
 
 ## Quick published-project verification
 

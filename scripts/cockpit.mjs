@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { readFile } from 'node:fs/promises'
 import { loadLocalEnv } from './local-env.mjs'
+import { uploadImage } from './cockpit-upload.mjs'
 import { resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
@@ -10,6 +11,7 @@ const usage = `Usage:
   npm run cockpit -- save project.json --update
   npm run cockpit -- save project.json --publish
   npm run cockpit -- find pi-chat
+  npm run cockpit -- upload image.png asset.json
 
 Requires COCKPIT_WRITE_API_KEY. Uses COCKPIT_URL (or NEXT_PUBLIC_COCKPIT_URL),
 falling back to http://localhost:8080. Node 22.18+ recommended.
@@ -17,7 +19,8 @@ falling back to http://localhost:8080. Node 22.18+ recommended.
 save accepts one project JSON object with title and slug. Defaults to a draft
 (_state: 0); --publish explicitly publishes (_state: 1).
 Existing _id requires --update; combine --update --publish to keep it published.
-No deletion, asset upload, or automatic upsert by slug. find checks existing entries.
+No deletion or automatic upsert by slug. find checks existing entries.
+Upload needs the custom portfolio endpoint installed; writes into the projects folder.
 check verifies read access only, not write permissions.
 The CLI loads .env.local internally without displaying it. Exported variables take precedence.`
 
@@ -36,6 +39,12 @@ export async function run(args, dependencies = {}) {
   if (
     !(
       (command === 'check' && args.length === 1) ||
+      (command === 'upload' &&
+        args.length === 3 &&
+        file &&
+        flags[0] &&
+        !file.startsWith('--') &&
+        !flags[0].startsWith('--')) ||
       (command === 'find' && args.length === 2 && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(file)) ||
       (command === 'save' &&
         file &&
@@ -63,6 +72,8 @@ export async function run(args, dependencies = {}) {
   } catch {
     throw new Error('Cockpit URL must be HTTP(S), without credentials, query or fragment.')
   }
+
+  if (command === 'upload') return uploadImage(base, key, file, flags[0], dependencies)
 
   let data
   if (command === 'save') {
