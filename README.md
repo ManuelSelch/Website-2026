@@ -17,13 +17,13 @@ Project reads and page regeneration use a 60-second revalidation interval. A new
 
 ## Cockpit project fields
 
-The collection is currently empty. The frontend uses this contract; align the collection fields before adding content:
+The frontend uses Cockpit's built-in publication state and the following content fields:
 
 | Field | Value |
 | --- | --- |
 | `title` | Required English project title |
 | `slug` | Required unique lowercase words separated by hyphens, e.g. `pi-chat` |
-| `published` | Boolean; only explicit `true` is rendered |
+| `_state` | Cockpit's built-in publication state; only `1` (published) is rendered. No custom `published` field is needed. |
 | `featured` | Boolean; `true` shows the project on the homepage (up to three) |
 | `summary` | Short English description |
 | `content` | Owner-authored HTML; see trust policy below |
@@ -49,10 +49,12 @@ Unit tests use Node's built-in TypeScript support (Node 22.18+ recommended):
 npm test
 ```
 
-HTTP integration tests are skipped unless a running site is supplied. The baseline suite expects an empty Cockpit collection:
+HTTP integration tests are skipped unless a running site is supplied. Test a real published project by supplying its slug, or opt into empty-collection assertions against an empty test collection:
 
 ```sh
-TEST_BASE_URL=http://localhost:3000 npm test
+TEST_BASE_URL=http://localhost:3000 TEST_PROJECT_SLUG=delivery-robot npm test
+# Only against an empty collection:
+TEST_BASE_URL=http://localhost:3000 TEST_EXPECT_EMPTY=1 npm test
 ```
 
 The optional `tests/browser-check.mjs` checks desktop/mobile widths, the exact light background, keyboard navigation, and browser errors. It requires Playwright and its Chromium installation; if Playwright is installed outside this project, set `PLAYWRIGHT_MODULE` to its resolved module path:

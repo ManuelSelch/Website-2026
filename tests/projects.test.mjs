@@ -9,7 +9,7 @@ const { CockpitClient } = client
 const project = {
   title: 'Pi-Chat',
   slug: 'pi-chat',
-  published: true,
+  _state: 1,
   featured: true,
   summary: 'A coding workspace.',
   tags: ['Software'],
@@ -34,6 +34,11 @@ test('public array response is used consistently by listing, featured projects, 
     assert.equal((await getFeaturedProjects())[0].slug, 'pi-chat')
     assert.deepEqual(await getAllProjectSlugs(), ['pi-chat'])
     assert.equal((await getProjectBySlug('pi-chat')).summary, project.summary)
+    for (const call of fetch.mock.calls) {
+      const filter = JSON.parse(new URL(call.arguments[0]).searchParams.get('filter'))
+      assert.equal(filter._state, 1)
+      assert.equal(filter.published, undefined)
+    }
   } finally {
     fetch.mock.restore()
   }
@@ -52,8 +57,8 @@ test('drafts, invalid slugs, and duplicate slugs are not shown', async () => {
   const fetch = respond([
     project,
     { ...project },
-    { ...project, slug: 'draft', published: false },
-    { ...project, slug: 'unset', published: undefined },
+    { ...project, slug: 'draft', _state: 0, published: true },
+    { ...project, slug: 'unset', _state: undefined, published: true },
     { ...project, slug: '../bad' },
   ])
   try {

@@ -37,7 +37,7 @@ function normalize(value: unknown): Project | null {
   const item = record(value)
   const slug = text(item.slug)
   const title = text(item.title).trim()
-  if (item.published !== true || !title || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return null
+  if (item._state !== 1 || !title || !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return null
   const sourceLinks = { ...item, ...record(item.links) }
   const links: ProjectLinks = {}
   for (const key of ['website', 'github', 'playstore', 'appstore', 'article'] as const) {
@@ -81,7 +81,7 @@ async function fetchProjects(options: CockpitRequestOptions): Promise<Project[]>
 }
 
 export function getProjects(limit = 100): Promise<Project[]> {
-  return fetchProjects({ filter: { published: true }, sort: { date: -1 }, limit, populate: 1 })
+  return fetchProjects({ filter: { _state: 1 }, sort: { date: -1 }, limit, populate: 1 })
 }
 
 export async function getFeaturedProjects(limit = 3): Promise<Project[]> {
@@ -90,7 +90,7 @@ export async function getFeaturedProjects(limit = 3): Promise<Project[]> {
 
 export async function getProjectBySlug(slug: string): Promise<Project | null> {
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return null
-  const projects = await fetchProjects({ filter: { slug, published: true }, limit: 1, populate: 1 })
+  const projects = await fetchProjects({ filter: { slug, _state: 1 }, limit: 1, populate: 1 })
   return projects.find(project => project.slug === slug) ?? null
 }
 

@@ -71,6 +71,12 @@ try {
   )
   assert.deepEqual(errors, [])
   console.log('PASS keyboard skip link, cross-route navigation, email, and no browser errors.')
+  await page.goto(`${base}/projects/does-not-exist`, { waitUntil: 'domcontentloaded' })
+  await page.getByRole('heading', { name: /^Project not found/ }).waitFor()
+  assert.match(await page.locator('meta[name="robots"]').first().getAttribute('content'), /noindex/)
+  await page.getByRole('link', { name: 'Back to projects' }).click()
+  await page.waitForURL('**/projects')
+  console.log('PASS hydrated not-found UI, noindex, and back-to-projects navigation.')
 } finally {
   await browser.close()
 }
