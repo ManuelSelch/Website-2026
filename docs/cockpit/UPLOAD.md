@@ -50,6 +50,8 @@ The initial endpoint incorrectly required Cockpit's uploaded asset to have `name
 
 Before using in production, verify that a request with no key or insufficient permissions cannot upload anything, a valid image appears in Assets → projects, and malformed/non-image files are rejected. No request body or internal exception details are returned in errors.
 
-The endpoint is prepared from Cockpit's public file-routing and Assets module interfaces. It has **not been installed or tested against your Cockpit server yet**. No Docker access is needed or permitted. Tell the assistant when installation is complete to perform API checks and upload the five Pi-Chat screenshots.
+The endpoint is installed and has been tested through the API: unauthenticated requests return 401, non-image uploads return 415, and all five Pi-Chat screenshots are registered in the root projects folder. Pi-Chat now uses their native references. Rejection for an authenticated role lacking upload permission has not been separately tested. No Docker access is needed or permitted.
+
+If replacing the PHP file appears to have no effect, reload PHP/Cockpit through your normal hosting controls: cached endpoint code persisted here until the user restarted Cockpit. The verification command now checks each native asset ID against the public Assets API, including its path and folder, as well as website image loading.
 
 Sources: [file-based API routes](https://getcockpit.com/documentation/guides/creating-file-based-api-endpoints), [Cockpit Assets module](https://github.com/Cockpit-HQ/Cockpit/blob/master/modules/Assets/bootstrap.php).

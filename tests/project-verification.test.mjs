@@ -51,6 +51,30 @@ test('verification detects missing featured field, mismatches, duplicates and dr
     }),
   )
 })
+test('native references must resolve to the stored asset and folder', async () => {
+  const asset = { _id: 'native-id', path: '/photo.png', folder: 'projects-id' }
+  const expected = { ...project, cover: asset, gallery: [asset] }
+  let wrong = false,
+    lookups = 0
+  const deps = {
+    env: {},
+    fetch: async (url, init) => {
+      assert.equal(init.headers, undefined)
+      if (url.pathname.includes('/api/assets/')) {
+        lookups++
+        return new Response(
+          JSON.stringify({ ...asset, folder: wrong ? 'wrong-folder' : asset.folder }),
+        )
+      }
+      return new Response(JSON.stringify([{ ...expected, _state: 1 }]))
+    },
+  }
+  await verifyContent(expected, deps)
+  assert.equal(lookups, 1)
+  wrong = true
+  await assert.rejects(verifyContent(expected, deps), /Native asset reference mismatch/)
+})
+
 test('environment loading tolerates missing file but sanitizes other errors', () => {
   assert.doesNotThrow(() =>
     loadLocalEnv(() => {

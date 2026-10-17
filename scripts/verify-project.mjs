@@ -19,6 +19,19 @@ export async function verifyContent(expected, { env = process.env, fetch: reques
   )
   assert.equal(matches.length, 1, 'Expected exactly one public project with this slug')
   assert.equal(matches[0]._state, 1, 'Project must be published')
+  const assets = [expected.cover, ...(expected.gallery || [])].filter(asset => asset?._id)
+  for (const asset of new Map(assets.map(asset => [asset._id, asset])).values()) {
+    const response = await request(
+      new URL(`api/assets/${encodeURIComponent(asset._id)}`, base.replace(/\/$/, '') + '/'),
+      { signal: AbortSignal.timeout(10000) },
+    )
+    assert.ok(response.ok, 'Native asset lookup failed')
+    const native = await response.json()
+    assert.ok(
+      native?._id === asset._id && native.path === asset.path && native.folder === asset.folder,
+      'Native asset reference mismatch',
+    )
+  }
   for (const field of ['title', 'summary', 'content', 'cover', 'gallery', 'links', 'featured']) {
     if (field in expected)
       assert.ok(

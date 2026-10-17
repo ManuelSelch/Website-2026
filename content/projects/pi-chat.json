@@ -7,37 +7,61 @@
   "tags": ["Software", "AI tools", "TypeScript"],
   "featured": true,
   "cover": {
-    "path": "https://raw.githubusercontent.com/ManuelSelch/pi-chat/3225bd95f5a0a24a94eb18b995c2065973dcd4cf/docs/images/pi-chat-session.png",
+    "_id": "6ad3de0518e45731720a5490",
+    "path": "/2026/10/17/pi-chat-session_uid_6ad3de05bf937.png",
+    "name": "pi-chat-session.png",
+    "title": "Pi chat session",
+    "folder": "6acb73eed3de5cd41709f415",
     "alt": "Pi-Chat coding session with its conversation and tool output",
     "type": "image"
   },
   "gallery": [
     {
-      "path": "https://raw.githubusercontent.com/ManuelSelch/pi-chat/3225bd95f5a0a24a94eb18b995c2065973dcd4cf/docs/images/pi-chat-home.png",
+      "_id": "6ad3d606cfd008ecff002515",
+      "path": "/2026/10/17/pi-chat-home_uid_6ad3d60634659.png",
+      "name": "pi-chat-home.png",
+      "title": "Pi chat home",
+      "folder": "6acb73eed3de5cd41709f415",
       "alt": "Pi-Chat home view for starting and finding sessions",
       "caption": "The home view brings projects and sessions into a local browser workspace.",
       "type": "image"
     },
     {
-      "path": "https://raw.githubusercontent.com/ManuelSelch/pi-chat/3225bd95f5a0a24a94eb18b995c2065973dcd4cf/docs/images/pi-chat-session.png",
+      "_id": "6ad3de0518e45731720a5490",
+      "path": "/2026/10/17/pi-chat-session_uid_6ad3de05bf937.png",
+      "name": "pi-chat-session.png",
+      "title": "Pi chat session",
+      "folder": "6acb73eed3de5cd41709f415",
       "alt": "Pi-Chat coding session with conversation and tool cards",
       "caption": "Streaming conversation and expandable tool output in a persistent Pi session.",
       "type": "image"
     },
     {
-      "path": "https://raw.githubusercontent.com/ManuelSelch/pi-chat/3225bd95f5a0a24a94eb18b995c2065973dcd4cf/docs/images/pi-chat-latex.png",
+      "_id": "6ad3de0618e45731720a5491",
+      "path": "/2026/10/17/pi-chat-latex_uid_6ad3de061ca7c.png",
+      "name": "pi-chat-latex.png",
+      "title": "Pi chat latex",
+      "folder": "6acb73eed3de5cd41709f415",
       "alt": "Mathematical notation rendered in a Pi-Chat conversation",
       "caption": "Markdown and KaTeX rendering support technical conversations.",
       "type": "image"
     },
     {
-      "path": "https://raw.githubusercontent.com/ManuelSelch/pi-chat/3225bd95f5a0a24a94eb18b995c2065973dcd4cf/docs/images/pi-chat-commands.png",
+      "_id": "6ad3de0618e45731720a5492",
+      "path": "/2026/10/17/pi-chat-commands_uid_6ad3de066b075.png",
+      "name": "pi-chat-commands.png",
+      "title": "Pi chat commands",
+      "folder": "6acb73eed3de5cd41709f415",
       "alt": "Pi-Chat command interface",
       "caption": "Commands are available directly from the browser interface.",
       "type": "image"
     },
     {
-      "path": "https://raw.githubusercontent.com/ManuelSelch/pi-chat/3225bd95f5a0a24a94eb18b995c2065973dcd4cf/docs/images/pi-chat-session-light.png",
+      "_id": "6ad3de0618e45731720a5493",
+      "path": "/2026/10/17/pi-chat-session-light_uid_6ad3de06bc77f.png",
+      "name": "pi-chat-session-light.png",
+      "title": "Pi chat session light",
+      "folder": "6acb73eed3de5cd41709f415",
       "alt": "Pi-Chat session using its light theme",
       "caption": "The session interface in the light theme.",
       "type": "image"
