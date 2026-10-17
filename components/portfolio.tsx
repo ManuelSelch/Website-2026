@@ -21,7 +21,7 @@ export function SiteHeader() {
   return (
     <Box component="header" className="site-header">
       <Anchor component={Link} href="/" className="wordmark" underline="never">
-        manuel selch<span className="accent">.</span>
+        manuel selch
       </Anchor>
       <Group component="nav" aria-label="Main navigation" className="main-navigation" gap={32}>
         <Anchor component={Link} href="/projects" underline="never">
