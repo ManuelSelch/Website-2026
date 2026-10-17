@@ -46,7 +46,7 @@ The initial endpoint incorrectly required Cockpit's uploaded asset to have `name
 - **403:** the authenticated role lacks `assets/upload`.
 - **409:** root `projects` folder is missing or ambiguous.
 - **413/415:** image size/resolution/type rejected.
-- **500 or timeout:** check Assets before retrying; a file might already have been uploaded.
+- **500 or timeout:** check Assets before retrying; a file might already have been uploaded. The current endpoint catches errors across the handler and reports only a fixed failure stage (`authorization`, `multipart-validation`, `image-validation`, `folder-lookup`, `duplicate-lookup`, or `asset-storage`). It never returns exception details. A missing API key should return 401; this is a non-writing reachability check.
 
 Before using in production, verify that a request with no key or insufficient permissions cannot upload anything, a valid image appears in Assets → projects, and malformed/non-image files are rejected. No request body or internal exception details are returned in errors.
 
