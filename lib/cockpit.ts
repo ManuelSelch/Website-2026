@@ -25,7 +25,9 @@ export class CockpitClient {
       }
     }
     const response = await fetch(url.toString(), {
-      next: { revalidate: 60 },
+      ...(process.env.NODE_ENV === 'development'
+        ? { cache: 'no-store' as const }
+        : { next: { revalidate: 60 } }),
       signal: AbortSignal.timeout(8000),
     })
     if (!response.ok) throw new Error(`Cockpit API error: ${response.status}`)
