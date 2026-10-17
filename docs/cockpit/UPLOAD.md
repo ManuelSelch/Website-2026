@@ -26,7 +26,7 @@ This should expose `POST <COCKPIT_URL>/api/portfolio/upload`. PHP needs Fileinfo
 npm run cockpit -- upload /path/to/pi-chat-home.png content/projects/pi-chat-home.asset.json
 ```
 
-The output file must not already exist. The CLI uploads one image and stores the **complete native Cockpit asset object**, including `_id`, `name`, `path`, and `folder`. It never displays the key. The endpoint only accepts a single PNG/JPEG/WebP image, up to 10 MiB and 20 megapixels, into the fixed `projects` folder. It does not accept arbitrary folders, remote URLs, executable uploads, replacement or deletion.
+The output file must not already exist. The CLI uploads one image and stores the **complete native Cockpit asset object**, including `_id`, `path`, and `folder`. Native Cockpit assets may have `title`/`altText` instead of `name`; the CLI adds a filename for the project editor. Byte-identical files already present in the projects folder are reused (best-effort deduplication, not a concurrency guarantee). It never displays the key. The endpoint only accepts a single PNG/JPEG/WebP image, up to 10 MiB and 20 megapixels, into the fixed `projects` folder. It does not accept arbitrary folders, remote URLs, executable uploads, replacement or deletion.
 
 Use the returned asset object in the project's `cover` or `gallery` field. Preserve its native metadata; add descriptive `alt`/`caption` as appropriate. Then publish the existing project:
 
@@ -34,6 +34,10 @@ Use the returned asset object in the project's `cover` or `gallery` field. Prese
 npm run cockpit -- save content/projects/pi-chat.json --update --publish
 TEST_BASE_URL=http://127.0.0.1:3016 npm run verify:project -- pi-chat
 ```
+
+## Updating the initial endpoint
+
+The initial endpoint incorrectly required Cockpit's uploaded asset to have `name`. Cockpit may omit that field, causing HTTP 500 **after storing the image**, without adding a system-log entry. Replace your installed file with the current [`upload.post.php`](api/portfolio/upload.post.php) before retrying. It now validates `_id` and `path`, and reuses an existing same-hash asset in projects to avoid another duplicate. Previously created duplicate files are not deleted automatically.
 
 ## Troubleshooting and acceptance checks
 

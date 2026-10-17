@@ -45,13 +45,23 @@ if (count($folders) !== 1 || empty($folders[0]['_id'])) {
     return $fail(409, 'Create exactly one root projects folder in Assets first');
 }
 try {
+    // A previous request may have stored the asset before its response failed.
+    // Reuse byte-identical images within projects rather than uploading duplicates.
+    $existing = $this->module('assets')->assets([
+        'filter' => ['folder' => $folders[0]['_id'], '_hash' => md5_file($file['tmp_name'])],
+        'sort' => ['_created' => 1], 'limit' => 1
+    ]);
+    if (isset($existing[0]['_id'], $existing[0]['path'])) {
+        return ['asset' => $existing[0], 'reused' => true];
+    }
     $upload = [];
     foreach (['name', 'tmp_name', 'error', 'size', 'type'] as $field) {
         $upload[$field] = [$file[$field] ?? ($field === 'type' ? $mime : $size)];
     }
     $result = $this->module('assets')->upload($upload, ['folder' => $folders[0]['_id']]);
     $asset = $result['assets'][0] ?? null;
-    if (!$asset || empty($asset['_id']) || empty($asset['path']) || empty($asset['name'])) {
+    // Native Cockpit assets have title/altText, not necessarily a name field.
+    if (!$asset || empty($asset['_id']) || empty($asset['path'])) {
         return $fail(500, 'Upload did not produce a native asset; check Assets before retrying');
     }
     return ['asset' => $asset];

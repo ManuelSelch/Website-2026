@@ -42,23 +42,31 @@ export async function uploadImage(base, key, file, output, dependencies = {}) {
   } catch {
     throw new Error('Cockpit upload failed or timed out; check Assets before retrying.')
   }
-  if (!response.ok) throw new Error(`Cockpit upload failed (HTTP ${response.status}).`)
+  if (!response.ok) {
+    let detail = ''
+    try {
+      const message = (await response.json()).error
+      if (
+        typeof message === 'string' &&
+        message.length <= 120 &&
+        /^[a-zA-Z0-9 ,.'-]+$/.test(message) &&
+        !message.includes(key)
+      )
+        detail = ` ${message}`
+    } catch {}
+    throw new Error(`Cockpit upload failed (HTTP ${response.status}).${detail}`)
+  }
   let asset
   try {
     asset = (await response.json()).asset
   } catch {
     throw new Error('Invalid upload response; check Assets before retrying.')
   }
-  if (
-    !asset ||
-    typeof asset._id !== 'string' ||
-    typeof asset.path !== 'string' ||
-    !asset.path ||
-    typeof asset.name !== 'string' ||
-    !asset.name
-  ) {
+  if (!asset || typeof asset._id !== 'string' || typeof asset.path !== 'string' || !asset.path) {
     throw new Error('Upload did not return a native asset; check Assets before retrying.')
   }
+  // Cockpit's native asset objects have title/altText but may omit name.
+  asset.name = typeof asset.name === 'string' && asset.name ? asset.name : basename(file)
   const json = JSON.stringify(asset, null, 2)
   if (json.includes(key))
     throw new Error('Unexpected credential in upload response; refusing to save it.')

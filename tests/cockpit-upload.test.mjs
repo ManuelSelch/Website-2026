@@ -16,7 +16,13 @@ test('upload sends multipart and saves native asset reference without secrets', 
       calls.push(args)
       return new Response(
         JSON.stringify({
-          asset: { _id: 'native', path: '/image.png', name: 'image.png', folder: 'projects-id' },
+          asset: {
+            _id: 'native',
+            path: '/image.png',
+            title: 'Image',
+            altText: 'image.png',
+            folder: 'projects-id',
+          },
         }),
       )
     },
@@ -28,6 +34,7 @@ test('upload sends multipart and saves native asset reference without secrets', 
   assert.equal(calls[0][1].redirect, 'error')
   assert.equal(calls[0][1].body.get('file').name, 'image.png')
   assert.equal(JSON.parse(saved[0][1])._id, 'native')
+  assert.equal(JSON.parse(saved[0][1]).name, 'image.png')
   assert.equal(saved[0][2].flag, 'wx')
 })
 test('upload rejects unsupported extensions and existing output before contacting CMS', async () => {
@@ -57,7 +64,7 @@ test('upload failures never print server body and do not save fabricated referen
       ...deps,
       fetch: async () => new Response('sensitive backend details', { status: 403 }),
     }),
-    { message: 'Cockpit upload failed (HTTP 403).' },
+    /Cockpit upload failed \(HTTP 403\)/,
   )
   await assert.rejects(
     run(['upload', 'image.png', 'asset.json'], {
