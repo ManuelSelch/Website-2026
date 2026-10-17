@@ -136,15 +136,6 @@ em,
   white-space: nowrap;
   color: var(--foreground);
 }
-.hero-margin {
-  position: absolute;
-  right: 0;
-  top: 114px;
-  font-size: 9px;
-  letter-spacing: 2px;
-  writing-mode: vertical-rl;
-  color: var(--muted);
-}
 .work-section {
   padding: 46px 0 70px;
 }
@@ -711,9 +702,6 @@ em,
   }
   .hero-title {
     font-size: 65px;
-  }
-  .hero-margin {
-    display: none;
   }
   .featured-project {
     grid-template-columns: 1.4fr 1fr;

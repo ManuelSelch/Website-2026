@@ -72,13 +72,7 @@ export function Hero() {
           I&apos;m Manuel. I build software, explore robotics, and enjoy figuring out how things fit
           together. This is a collection of my projects.
         </Text>
-        <Anchor href="#work" className="text-link" underline="never">
-          Explore my work <span aria-hidden="true">↓</span>
-        </Anchor>
       </Box>
-      <Text className="hero-margin" aria-hidden="true">
-        IDEA → BUILD → LEARN → REPEAT
-      </Text>
     </Box>
   )
 }
