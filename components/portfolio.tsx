@@ -45,14 +45,6 @@ export function SiteFooter() {
       <Text span className="footer-note">
         Always a work in progress.
       </Text>
-      <Anchor
-        href="https://manuelselch.de/2023/"
-        target="_blank"
-        rel="noreferrer"
-        underline="hover"
-      >
-        2023 website <span aria-hidden="true">↗</span>
-      </Anchor>
     </Box>
   )
 }
