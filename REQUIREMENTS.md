@@ -38,6 +38,7 @@ Continue the existing portfolio into a reliable, English-language personal proje
 - The sitemap must include actual public page routes and published project detail routes, not fragment-only homepage sections.
 - Launch preparation must cover favicon/social assets, appropriate legal pages, configuration documentation, verification, and preservation of existing old-version URLs.
 - Preserve the approved light revision 2 design: neutral off-white, grey-green accents, editorial serif typography, and Mantine (not Tailwind).
+- Hero portrait follows approved mockup `mockups/hero-portrait` revision 1: square black-and-white illustration to the right (220–300px) on desktop; below the headline and above the introduction (144px) at widths <=760px. Match its white background to the page; no border, shadow, or animation. Keep the vertical idea/build text and Explore my work link removed.
 - Detail pages use a manual contained-image gallery on the left and content-height cards on the right; mobile order is gallery, details, information. No standalone cover, autoplay, enlargement hint, or zoom; fullscreen keyboard navigation remains.
 - Collection covers, titles and Details links must open their project.
 - Local Cockpit CLI credentials load internally without printing secrets. Publishing requires --publish; updates require --update and an existing _id. Public verification is read-only and sends no API key.
@@ -51,7 +52,7 @@ Continue the existing portfolio into a reliable, English-language personal proje
 - Pi-Chat source: https://github.com/ManuelSelch/pi-chat. Robot source: https://manuelselch.de/2023/blog.php?id=30. BusinessToGo material still needs to be provided or identified.
 - The archive is deferred until after the core portfolio; the complete version list and URLs are not yet known.
 - Next.js 15 Promise-based params and CSS declarations are implemented; prior production builds, lint and unit/browser checks passed. NEXT_DIST_DIR supports isolated builds alongside development.
-- CLI and verification usage lives in docs/cockpit/README.md. Pi-Chat source JSON retains its item ID and five pinned GitHub screenshots.
+- CLI and verification usage lives in docs/cockpit/README.md. Pi-Chat source JSON retains its item ID and five registered native Cockpit asset references; upload receipts live alongside it.
 
 ## Implementation Plan
 ### 1. English and Contact Baseline

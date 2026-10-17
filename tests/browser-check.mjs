@@ -15,7 +15,7 @@ page.on('console', message => {
   if (message.type() === 'error') errors.push(message.text())
 })
 try {
-  for (const width of [1280, 390, 320]) {
+  for (const width of [1280, 900, 761, 760, 390, 320]) {
     await page.setViewportSize({ width, height: 900 })
     for (const route of ['/', '/projects']) {
       await page.goto(`${base}${route}`, { waitUntil: 'domcontentloaded' })
@@ -34,24 +34,47 @@ try {
       assert.equal(state.scheme, 'light')
       assert.equal(state.lang, 'en')
       if (route === '/') {
-        const expectedTitleSize = width === 1280 ? '86px' : width === 320 ? '36px' : '40px'
+        const portrait = page.getByRole('img', {
+          name: 'Illustrated black-and-white portrait of Manuel Selch',
+        })
+        await portrait.waitFor({ state: 'visible', timeout: 10000 })
+        await portrait.evaluate(image => image.decode())
+        const picture = await portrait.boundingBox()
+        const heading = await page.locator('.hero-heading').boundingBox()
+        const introduction = await page.locator('.hero-introduction').boundingBox()
+        assert.ok(picture.width > 0 && Math.abs(picture.width - picture.height) < 1)
+        if (width > 760) {
+          assert.ok(picture.x >= heading.x + heading.width, 'Portrait must sit beside the hero')
+          assert.ok(Math.abs(picture.width - Math.min(300, Math.max(220, width * 0.25))) < 1)
+        } else {
+          assert.equal(Math.round(picture.width), 144)
+          assert.ok(picture.y >= heading.y + heading.height, 'Mobile portrait follows the headline')
+          assert.ok(
+            introduction.y >= picture.y + picture.height,
+            'Mobile introduction follows the portrait',
+          )
+        }
+        assert.equal(await page.getByRole('link', { name: /Explore my work/ }).count(), 0)
+        const expectedTitleSize =
+          width <= 760
+            ? Math.min(61, Math.max(40, width * 0.08))
+            : Math.min(76, Math.max(44, width * 0.059))
         const titleSize = await page
           .locator('h1')
           .evaluate(element => getComputedStyle(element).fontSize)
-        assert.equal(
-          titleSize,
-          expectedTitleSize,
+        assert.ok(
+          Math.abs(parseFloat(titleSize) - expectedTitleSize) < 0.1,
           'Approved hero typography must override Mantine defaults',
         )
         const labelSize = await page
           .locator('.hero .eyebrow')
           .evaluate(element => getComputedStyle(element).fontSize)
-        assert.equal(labelSize, width === 1280 ? '10px' : '8px')
+        assert.equal(labelSize, width > 640 ? '10px' : '8px')
       }
       console.log('PASS responsive light page:', width, route)
     }
     await page.goto(`${base}/`, { waitUntil: 'domcontentloaded' })
-    if (width !== 320) {
+    if (width === 1280 || width === 390) {
       const file = path.join(os.tmpdir(), `manuel-portfolio-${width}.png`)
       await page.screenshot({ path: file, fullPage: true })
       console.log('Screenshot:', file)

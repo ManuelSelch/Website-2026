@@ -1,0 +1,37 @@
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(220px, 25vw, 300px);
+  grid-template-areas: "heading portrait" "intro portrait";
+  column-gap: 48px;
+  align-items: center;
+}
+.hero-heading { grid-area: heading; }
+.hero h1 { font-size: clamp(44px, 5.9vw, 76px); }
+.hero-portrait {
+  grid-area: portrait;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  display: block;
+  border-radius: 10px;
+  mix-blend-mode: multiply;
+}
+.hero-introduction {
+  grid-area: intro;
+  max-width: 440px;
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--muted);
+}
+.preview-project { padding: 32px; max-width: 700px; }
+.preview-project h3 { font-family: var(--heading); font-size: 36px; font-weight: 400; margin: 12px 0; }
+.preview-project p { color: var(--muted); max-width: 490px; }
+@media (max-width: 760px) {
+  .hero {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "heading" "portrait" "intro";
+  }
+  .hero h1 { font-size: clamp(40px, 8vw, 61px); letter-spacing: -2px; }
+  .hero-portrait { width: 144px; margin: 0 0 24px; }
+  .hero-introduction { font-size: 14px; max-width: 440px; }
+}

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import NextImage from 'next/image'
 import {
   Anchor,
   Badge,
@@ -59,20 +60,29 @@ export function SiteFooter() {
 export function Hero() {
   return (
     <Box component="section" className="hero" aria-labelledby="hero-title">
-      <Text className="eyebrow">
-        <span className="small-line" aria-hidden="true" /> SOFTWARE · ROBOTICS · SIDE PROJECTS
-      </Text>
-      <Title order={1} id="hero-title" className="hero-title">
-        Curiosity, turned
-        <br />
-        into <em>things that work.</em>
-      </Title>
-      <Box className="hero-bottom">
-        <Text>
-          I&apos;m Manuel. I build software, explore robotics, and enjoy figuring out how things fit
-          together. This is a collection of my projects.
+      <Box className="hero-heading">
+        <Text className="eyebrow">
+          <span className="small-line" aria-hidden="true" /> SOFTWARE · ROBOTICS · SIDE PROJECTS
         </Text>
+        <Title order={1} id="hero-title" className="hero-title">
+          Curiosity, turned
+          <br />
+          into <em>things that work.</em>
+        </Title>
       </Box>
+      <NextImage
+        className="hero-portrait"
+        src="/images/manuel-portrait.png"
+        alt="Illustrated black-and-white portrait of Manuel Selch"
+        width={1254}
+        height={1254}
+        sizes="(max-width: 760px) 144px, (max-width: 1200px) 25vw, 300px"
+        priority
+      />
+      <Text className="hero-introduction">
+        I&apos;m Manuel. I build software, explore robotics, and enjoy figuring out how things fit
+        together. This is a collection of my projects.
+      </Text>
     </Box>
   )
 }
