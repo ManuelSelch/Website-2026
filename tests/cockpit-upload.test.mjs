@@ -69,6 +69,19 @@ test('upload failures never print server body and do not save fabricated referen
   await assert.rejects(
     run(['upload', 'image.png', 'asset.json'], {
       ...deps,
+      fetch: async () =>
+        new Response(
+          JSON.stringify({
+            error: 'Upload did not produce a native asset; check Assets before retrying',
+          }),
+          { status: 500 },
+        ),
+    }),
+    /native asset; check Assets/,
+  )
+  await assert.rejects(
+    run(['upload', 'image.png', 'asset.json'], {
+      ...deps,
       fetch: async () => new Response('{"asset":{"path":"/image.png"}}'),
     }),
     /native asset/,

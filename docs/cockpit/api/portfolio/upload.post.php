@@ -33,6 +33,10 @@ $size = filesize($file['tmp_name']);
 if ($size === false || $size < 1 || $size > 10 * 1024 * 1024) {
     return $fail(413, 'Maximum image size is 10 MiB');
 }
+$nativeLimit = $this->retrieve('assets/max_upload_size', 0);
+if (is_numeric($nativeLimit) && $nativeLimit > 0 && $size >= $nativeLimit) {
+    return $fail(413, 'Image exceeds configured Cockpit asset size limit');
+}
 $types = ['png' => 'image/png', 'jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'webp' => 'image/webp'];
 $extension = strtolower(pathinfo(basename($file['name']), PATHINFO_EXTENSION));
 $stage = 'image-validation';
@@ -69,7 +73,12 @@ if (count($folders) !== 1 || empty($folders[0]['_id'])) {
     $asset = $result['assets'][0] ?? null;
     // Native Cockpit assets have title/altText, not necessarily a name field.
     if (!$asset || empty($asset['_id']) || empty($asset['path'])) {
-        return $fail(500, 'Upload did not produce a native asset; check Assets before retrying');
+        // Return only counts/keys, never raw importer data or uploaded paths.
+        $counts = [];
+        foreach (['uploaded', 'failed', 'assets'] as $key) {
+            $counts[] = $key . ' ' . (isset($result[$key]) && is_array($result[$key]) ? count($result[$key]) : 0);
+        }
+        return $fail(500, 'Cockpit import returned ' . implode(', ', $counts));
     }
     return ['asset' => $asset];
 } catch (Throwable $error) {

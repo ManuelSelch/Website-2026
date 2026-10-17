@@ -49,7 +49,7 @@ export async function uploadImage(base, key, file, output, dependencies = {}) {
       if (
         typeof message === 'string' &&
         message.length <= 120 &&
-        /^[a-zA-Z0-9 ,.'-]+$/.test(message) &&
+        /^[a-zA-Z0-9 ,.;'-]+$/.test(message) &&
         !message.includes(key)
       )
         detail = ` ${message}`
