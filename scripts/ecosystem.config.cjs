@@ -18,7 +18,7 @@ module.exports = {
       instances: 1,
       exec_mode: 'fork',
       restart_delay: 3000,
-      env: { NODE_ENV: 'production', NEXT_DIST_DIR: '.next-production' },
+      env: { NODE_ENV: 'production', NEXT_DIST_DIR: '.next' },
     },
   ],
 }
