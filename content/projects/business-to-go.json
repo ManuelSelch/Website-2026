@@ -1,0 +1,11 @@
+{
+  "_id": "6ad4136b7c2d0ac7ec06e468",
+  "title": "Business to Go",
+  "slug": "business-to-go",
+  "summary": "A personal time and project management app connecting Kimai and Taiga with offline access.",
+  "content": "<p>I developed Business to Go to bring time tracking and project management into one app while improving my app-development skills.</p><h3>Modular architecture</h3><p>The app uses The Composable Architecture (TCA) to structure its features. It connects to Kimai for time management and Taiga for project management.</p><h3>Working offline</h3><p>An offline mode stores data locally in a SQLite database, allowing the app to retain information without a continuous network connection.</p><p>This description reflects the project documented on my earlier portfolio; it does not imply a current public release.</p>",
+  "tags": ["App", "Swift", "TCA", "SQLite"],
+  "featured": false,
+  "gallery": [],
+  "links": { "github": "https://github.com/ManuelSelch/businessToGo" }
+}

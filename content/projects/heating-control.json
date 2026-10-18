@@ -1,0 +1,11 @@
+{
+  "_id": "6ad492247c2d0ac7ec06e46e",
+  "title": "Heating Control",
+  "slug": "heating-control",
+  "summary": "A microcontroller-connected heating controller with temperature monitoring and historical charts.",
+  "content": "<p>This project connects a custom heating controller to an app through a web server and microcontroller.</p><h3>Temperature-driven control</h3><p>The system monitors temperatures on the roof and in the basement, with an additional sensor in the tank. A configured temperature difference triggers a relay controlling the hot-water pump.</p><h3>Making measurements visible</h3><p>The app displays temperature history across different time ranges, from recent minutes to longer-term trends. This is a description of a personal electronics project, not a claim of certified safety or suitability for other heating installations.</p>",
+  "tags": ["Microcontroller", "App", "Monitoring"],
+  "featured": false,
+  "gallery": [],
+  "links": {}
+}

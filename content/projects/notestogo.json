@@ -1,0 +1,11 @@
+{
+  "_id": "6ad492247c2d0ac7ec06e470",
+  "title": "NotesToGo",
+  "slug": "notestogo",
+  "summary": "An iPad note-taking app exploring handwritten documents, local organization and editable PDF workflows.",
+  "content": "<p>I am building NotesToGo as a native iPad app for handwritten, multipage notes. The app combines a local file explorer with a document editor built using SwiftUI and PaperKit.</p><h3>Document workflows</h3><p>The project explores page organization, manual saving and reliable handling of file operations and errors. Flux structures feature state and asynchronous work, while Factory provides dependency injection.</p><h3>PDF-first development</h3><p>An ongoing development effort explores self-contained PDFs that remain visible in other readers while retaining native editing information. This is work in progress, not a claim that every PDF workflow is complete or that the app is available in the App Store.</p>",
+  "tags": ["iPad", "SwiftUI", "PaperKit", "PDF"],
+  "featured": false,
+  "gallery": [],
+  "links": { "github": "https://github.com/ManuelSelch/notesToGo" }
+}

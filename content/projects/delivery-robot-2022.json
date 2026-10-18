@@ -1,0 +1,11 @@
+{
+  "_id": "6ad492247c2d0ac7ec06e46c",
+  "title": "Autonomous Delivery Robot — 2022",
+  "slug": "delivery-robot-2022",
+  "summary": "An early team-built delivery robot combining Raspberry Pi control, route planning and camera-based traffic-light recognition.",
+  "content": "<p>Our team built an aluminium delivery robot controlled by a Raspberry Pi. The project won a regional Jugend forscht award in the Technology category.</p><h3>Navigation and connectivity</h3><p>The system combined camera-based recognition of red traffic lights, shortest-route planning using Dijkstra's algorithm and a simple lane-assistance function. Wi-Fi connected the robot with an app and database.</p><p>This entry describes the 2022 team project. The later 2023 work focused on more accurate self-localization through sensor fusion and is documented separately.</p>",
+  "tags": ["Robotics", "Raspberry Pi", "Jugend forscht"],
+  "featured": false,
+  "gallery": [],
+  "links": {}
+}

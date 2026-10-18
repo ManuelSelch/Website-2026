@@ -1,0 +1,11 @@
+{
+  "_id": "6ad492247c2d0ac7ec06e473",
+  "title": "Pi Extensions",
+  "slug": "pi-extensions",
+  "summary": "A collection of tools extending the Pi coding-agent workflow with memory, browser interaction and isolated Git worktrees.",
+  "content": "<p>I develop extensions around Pi to adapt the coding-agent workflow to my own projects. Rather than replacing the runtime, these tools add focused capabilities around it.</p><h3>Tools for ongoing work</h3><p>The broader collection includes Markdown-based persistent memory, browser-debugging tools and safe Git worktree management for isolated changes.</p><h3>Focused integration</h3><p>The projects explore how agent tools can integrate with existing repositories and development workflows. This entry groups the extension work together; each repository documents its own installation requirements and current capabilities.</p>",
+  "tags": ["AI tools", "Extensions", "Developer tools"],
+  "featured": false,
+  "gallery": [],
+  "links": { "github": "https://github.com/ManuelSelch/pi-extensions" }
+}

@@ -1,0 +1,11 @@
+{
+  "_id": "6ad492247c2d0ac7ec06e46d",
+  "title": "Intelligenzbolzen",
+  "slug": "intelligenzbolzen",
+  "summary": "A team project connecting exercise-sensing devices with an app to make physical activity more engaging.",
+  "content": "<p>Our school robotics team developed Intelligenzbolzen around the idea of encouraging people to exercise. The project grew from the 2020/21 FIRST LEGO League theme and was also entered in Jugend forscht in 2021.</p><h3>Measuring movement</h3><p>We built sensor-equipped devices that connect to a phone over Wi-Fi. The app was designed to recognize and record exercises, show times and records in charts, and offer a two-player game.</p><p>The project combined electronics, sensor measurements and app development. It was shared team work; individual responsibilities still need to be described more precisely before publication.</p>",
+  "tags": ["Microcontroller", "App", "Jugend forscht"],
+  "featured": false,
+  "gallery": [],
+  "links": {}
+}

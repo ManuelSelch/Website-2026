@@ -1,0 +1,11 @@
+{
+  "_id": "6ad492247c2d0ac7ec06e471",
+  "title": "Flux",
+  "slug": "flux",
+  "summary": "A small Swift state-management library with action-based reducers, asynchronous middleware and a test store.",
+  "content": "<p>I developed Flux as a small Swift library for structuring application state and interactions. It separates synchronous state changes from asynchronous work.</p><h3>Actions and middleware</h3><p>Reducers update state in response to actions. Asynchronous middleware can return follow-up actions, keeping interactions explicit and testable.</p><h3>Testing asynchronous flows</h3><p>The accompanying test store supports checking dispatched and received actions and waiting for middleware tasks to finish with a bounded asynchronous finish operation. NotesToGo uses Flux to organize its editor features.</p>",
+  "tags": ["Swift", "Library", "State management", "Testing"],
+  "featured": false,
+  "gallery": [],
+  "links": { "github": "https://github.com/ManuelSelch/Flux" }
+}

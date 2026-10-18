@@ -1,0 +1,11 @@
+{
+  "_id": "6ad492247c2d0ac7ec06e46f",
+  "title": "PixelMission",
+  "slug": "pixelmission",
+  "summary": "Our first published mobile game: a pixel-art adventure with a level editor and multiplayer mode.",
+  "content": "<p>We created PixelMission as our first app for the App Store and Google Play, beginning when we were 14. It was an early opportunity to learn software development and project planning through a complete game.</p><h3>A pixel-art adventure</h3><p>The game offered different modes, a level editor and an online mode for playing against friends, alongside offline play.</p><p>PixelMission was a shared project. The original portfolio described it as a free release for Android and iOS; current store availability has not been verified.</p>",
+  "tags": ["Game", "Mobile", "Pixel art"],
+  "featured": false,
+  "gallery": [],
+  "links": {}
+}

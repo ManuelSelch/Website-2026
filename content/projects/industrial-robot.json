@@ -1,0 +1,11 @@
+{
+  "_id": "6ad492247c2d0ac7ec06e46b",
+  "title": "Industrial Robot",
+  "slug": "industrial-robot",
+  "summary": "A school-team robotics project exploring drink dispensing and Arduino-based command signalling.",
+  "content": "<p>Our group at WWG Bayreuth worked on an industrial robot intended to dispense drinks at the press of a button.</p><h3>Connecting microelectronics</h3><p>The project also explored communication with an Arduino. A relay transmits Morse-coded commands to the industrial robot, providing an interface for extending its functions with microelectronics.</p><p>This was a group project. The public source documents the system and interface, rather than assigning every component to an individual contributor.</p>",
+  "tags": ["Robotics", "Arduino", "Electronics"],
+  "featured": false,
+  "gallery": [],
+  "links": { "github": "https://github.com/ManuelSelch/Industrieroboter" }
+}

@@ -1,0 +1,11 @@
+{
+  "_id": "6ad492247c2d0ac7ec06e472",
+  "title": "Dotfield",
+  "slug": "dotfield",
+  "summary": "A browser strategy game exploring territory control, tactical geography and computer opponents.",
+  "content": "<p>I am developing Dotfield as a compact territory-control strategy game. Players move troops between cities, expand their territory and compete against computer-controlled factions.</p><h3>Geography and commitment</h3><p>Generated fields explore how mountains, rivers and bridges shape movement and staging decisions. Different city roles introduce trade-offs between production, defence and transport.</p><h3>Iterating on the rules</h3><p>The project combines a shared simulation with AI forecasts, saved rounds and responsive browser controls. Mechanics and balance are still evolving; this case study describes an ongoing project rather than a finished, balanced release.</p>",
+  "tags": ["Game", "Strategy", "TypeScript", "Web"],
+  "featured": false,
+  "gallery": [],
+  "links": {}
+}

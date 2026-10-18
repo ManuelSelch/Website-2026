@@ -1,0 +1,11 @@
+{
+  "_id": "6ad492247c2d0ac7ec06e469",
+  "title": "Odoo to go",
+  "slug": "odoo-to-go",
+  "summary": "A mobile interface for browsing and editing Odoo records through XML-RPC.",
+  "content": "<p>I explored a mobile interface for Odoo Community and Enterprise, using XML-RPC to load modules and their records from an Odoo server.</p><h3>Working with business data</h3><p>The app presents records in lists, supports searching within modules, editing record contents and deleting individual entries. It also loads module submenus.</p><p>An iOS widget provides a shortcut for creating contacts. A Kanban view was still in development in the earlier project documentation and is not presented here as a completed feature.</p>",
+  "tags": ["App", "Odoo", "XML-RPC", "iOS"],
+  "featured": false,
+  "gallery": [],
+  "links": {}
+}

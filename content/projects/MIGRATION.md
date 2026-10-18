@@ -1,7 +1,15 @@
 # Project migration inventory
 
 Source: http://old.manuelselch.de/2023/ (read-only inspection).
-Target CMS: https://cockpit.manuelselch.de. Create drafts first, not published entries.
+Target CMS: https://cockpit.manuelselch.de. Drafts created, none published.
+
+## Draft batch completed
+
+Twelve entries now exist with native `_state: 0`: Business to Go, Odoo to go, Moodlight, Industrial Robot, Autonomous Delivery Robot — 2022, Intelligenzbolzen, Heating Control, PixelMission, NotesToGo, Flux, Dotfield and Pi Extensions. Their individual JSON files retain the production `_id` for updates. Do not run creates again: use `--update` to retain each ID.
+
+These are text-only drafts: images/covers still need selection and native asset uploads. Client/employer work, animation and event/award pages remain on hold as listed below. Existing Pi-Chat and delivery-robot were not modified.
+
+Each save response confirmed `_state: 0`. Anonymous public listings exclude all twelve and direct item-by-ID requests return 404. Cockpit's standard content GET endpoints force published-only results even with our authenticated API key: `find` returning `[]` does NOT mean a draft is absent. Review drafts in Cockpit's editor; retain IDs locally and never recreate based solely on `find`. No separate read-after-write draft-content fidelity check was available through those endpoints.
 
 The source homepage links to 19 project/detail pages. Dates are often generic CMS dates (many 2023-06-10 or 2024-05-20); do not treat them as actual project completion dates. Shared work must use team attribution unless Manuel's individual role is documented. Public source descriptions are not permission to add private client details.
 
@@ -33,7 +41,7 @@ Also requested: NotesToGo, Flux, Dotfield and Pi extensions. Gather current repo
 
 ## Media handling
 
-Old site images use http://old.manuelselch.de/2023/admin/uploads/<filename>. Register chosen images as native assets via authenticated production Cockpit API, retain returned metadata and meaningful English alt/captions. Do not hotlink old HTTP media on the HTTPS portfolio. No assets or drafts were uploaded during this inventory step.
+Old site images use http://old.manuelselch.de/2023/admin/uploads/<filename>. Register chosen images as native assets via authenticated production Cockpit API, retain returned metadata and meaningful English alt/captions. Do not hotlink old HTTP media on the HTTPS portfolio. No legacy images have been uploaded for these drafts yet.
 
 ## Open decisions
 

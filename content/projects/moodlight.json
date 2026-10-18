@@ -1,0 +1,14 @@
+{
+  "_id": "6ad492247c2d0ac7ec06e46a",
+  "title": "Moodlight",
+  "slug": "moodlight",
+  "summary": "A hands-on workshop building a Wi-Fi-controlled RGB light at FabLab Bayreuth.",
+  "content": "<p>I helped organize Arduino Day 2023 at FabLab Bayreuth and led the Moodlight workshop.</p><h3>From soldering to control</h3><p>Participants soldered their own light and controlled its LED colour from a phone or computer. The microcontroller can join an existing Wi-Fi network or create its own network for connecting to the light.</p><p>The workshop combines practical electronics with a browser-accessible control interface. The accompanying source material is available in the FabLab Bayreuth repository.</p>",
+  "tags": ["Microcontroller", "Workshop", "Wi-Fi"],
+  "featured": false,
+  "gallery": [],
+  "links": {
+    "github": "https://github.com/fablab-bayreuth/Moodlight-Workshop",
+    "website": "https://fablab-bayreuth.de"
+  }
+}
