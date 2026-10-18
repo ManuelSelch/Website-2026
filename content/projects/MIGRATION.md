@@ -1,0 +1,42 @@
+# Project migration inventory
+
+Source: http://old.manuelselch.de/2023/ (read-only inspection).
+Target CMS: https://cockpit.manuelselch.de. Create drafts first, not published entries.
+
+The source homepage links to 19 project/detail pages. Dates are often generic CMS dates (many 2023-06-10 or 2024-05-20); do not treat them as actual project completion dates. Shared work must use team attribution unless Manuel's individual role is documented. Public source descriptions are not permission to add private client details.
+
+| Old ID | Project | Migration treatment |
+| --- | --- | --- |
+| 54 | Business to Go | Personal app; source supports TCA, SQLite offline storage, Kimai/Taiga connections; three screenshots; repository https://github.com/ManuelSelch/businessToGo. Ready for English draft. |
+| 27 | Odoo to go | App using XML-RPC to browse/edit Odoo modules, search, submenus and iOS contact widget; five images. Kanban was explicitly work in progress, not a completed feature. |
+| 31 | Moodlight | Arduino Day workshop led by Manuel at FabLab Bayreuth; Wi-Fi RGB lighting. Source https://github.com/fablab-bayreuth/Moodlight-Workshop. |
+| 29 | Industrial Robot | School group project dispensing drinks; Arduino/relay Morse command interface. Source https://github.com/ManuelSelch/Industrieroboter. Preserve group attribution. |
+| 26 | Autonomous Delivery Robot 2022 | Earlier team project, regional Jugend forscht winner; Raspberry Pi, traffic-light recognition, Dijkstra routing, app/database connection and simple lane assistance. Distinct from existing 2023 sensor-fusion entry. |
+| 25 | Intelligenzbolzen 2021 | Team exercise-sensing buttons and app; Wi-Fi sensors, charts and competitive game. Three images plus public research PDF. Individual roles not specified. |
+| 24 | Heating Control | Microcontroller, temperature sensors, relay-controlled hot-water pump and historical temperature graphs in app. Four images. Do not claim safety certification. |
+| 21 | PixelMission | First shared pixel-art mobile game, Android/iOS; level editor and multiplayer described; eight images and historic store links. Verify current availability before claiming downloadable today. |
+| 61 | Autodeko | Source gives product description/link, not Manuel's implementation contribution. Public client-facing draft only after role clarified. |
+| 53 | Sunnyswelt | Website/shop for author Birgit Sonnenblume; one image/link. Confirm Manuel's role and current publication permission. |
+| 51 | MCJonazn | Musician website made as a birthday gift; one image/link. Avoid publishing friend's age/private details. |
+| 47 | Waenzi Wazuri | Rhodesian Ridgeback website; source is only one sentence and image. Contribution needs clarification. |
+| 28 | BlueCatBio | Public source only states C# GUI work controlling BlueWasher. Hold client/employer case study pending explicit approval; no internal architecture, screenshots or customer information. |
+| 23 | Marius Angeschrien | Shared pixel-art animation using edited audio from a YouTube channel. Individual role and media reuse rights need clarification. |
+| 46 | FLL 2024 | Team regional winner; Manuel also describes judging/junior coaching. An activity/achievement rather than necessarily a standalone software project. |
+| 39 | BF/M Bayreuth | Manuel's talk on autonomous driving with 2023 robot project; potential robot milestone rather than separate project. |
+| 34 | Bayreuth Innovativ | Helped at FabLab stand; activity rather than standalone project. |
+| 32 | TUMMS | One-week mathematics scholarship awarded through Jugend forscht; achievement rather than implementation project. |
+| 30 | Autonomous Delivery Robot 2023 | Already published as delivery-robot. Do not duplicate or overwrite edited production content. |
+
+## Newer projects (not on the old site)
+
+Also requested: NotesToGo, Flux, Dotfield and Pi extensions. Gather current repository evidence and relevant images separately. Do not invent launch status or metrics. Pi-Chat already exists and has a manually updated production cover/gallery: avoid applying stale local JSON over it.
+
+## Media handling
+
+Old site images use http://old.manuelselch.de/2023/admin/uploads/<filename>. Register chosen images as native assets via authenticated production Cockpit API, retain returned metadata and meaningful English alt/captions. Do not hotlink old HTTP media on the HTTPS portfolio. No assets or drafts were uploaded during this inventory step.
+
+## Open decisions
+
+- Confirm specific roles where old source says only 'we', especially illustration/animation work potentially attributable to Marco.
+- Confirm client/employer publication scope before creating those case studies.
+- Decide whether talks, awards and workshops should all appear as projects or later in an experience/achievement section.
