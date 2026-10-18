@@ -7,7 +7,7 @@ Target CMS: https://cockpit.manuelselch.de. Drafts created, none published.
 
 Twelve entries now exist with native `_state: 0`: Business to Go, Odoo to go, Moodlight, Industrial Robot, Autonomous Delivery Robot — 2022, Intelligenzbolzen, Heating Control, PixelMission, NotesToGo, Flux, Dotfield and Pi Extensions. Their individual JSON files retain the production `_id` for updates. Do not run creates again: use `--update` to retain each ID.
 
-These are text-only drafts: images/covers still need selection and native asset uploads. Client/employer work, animation and event/award pages remain on hold as listed below. Existing Pi-Chat and delivery-robot were not modified.
+Eight legacy drafts now have 29 native images uploaded and attached as covers/galleries: Business to Go (3), Odoo to go (5), Moodlight (1), Industrial Robot (2), Delivery Robot 2022 (3), Intelligenzbolzen (3), Heating Control (4), PixelMission (8). NotesToGo, Flux, Dotfield and Pi Extensions remain text-only because suitable published source images were not found. Client/employer work, animation and event/award pages remain on hold as listed below. Existing Pi-Chat and delivery-robot were not modified.
 
 Each save response confirmed `_state: 0`. Anonymous public listings exclude all twelve and direct item-by-ID requests return 404. Cockpit's standard content GET endpoints force published-only results even with our authenticated API key: `find` returning `[]` does NOT mean a draft is absent. Review drafts in Cockpit's editor; retain IDs locally and never recreate based solely on `find`. No separate read-after-write draft-content fidelity check was available through those endpoints.
 
@@ -41,7 +41,11 @@ Also requested: NotesToGo, Flux, Dotfield and Pi extensions. Gather current repo
 
 ## Media handling
 
-Old site images use http://old.manuelselch.de/2023/admin/uploads/<filename>. Register chosen images as native assets via authenticated production Cockpit API, retain returned metadata and meaningful English alt/captions. Do not hotlink old HTTP media on the HTTPS portfolio. No legacy images have been uploaded for these drafts yet.
+Old site images use http://old.manuelselch.de/2023/admin/uploads/<filename>. Source filenames and English alt text are recorded in image-sources.json; downloads are retained locally under /tmp/manuel-project-images (temporary, not a backup). All 29 passed image-format, dimension and size validation, were reviewed in a contact sheet, and are registered as native assets in the production root projects folder. Native receipts are in assets/<slug>/; individual project JSON retains full asset metadata. No HTTP hotlinks are used. Covers use the first source image except Delivery Robot 2022, which uses the real robot photograph. Some covers are historical logos, not newly designed portfolio artwork.
+
+Save responses verified draft state, existing item ID, media ID/path/folder and unchanged title/summary/content. All 29 uploaded image URLs loaded successfully. The eight updated draft item URLs still return 404 anonymously, and public listings still contain only Pi-Chat and the existing 2023 robot. Uploaded media files themselves are public: draft item privacy does not make assets private.
+
+The source for Delivery Robot 2022 includes a team photo named gruppenbildJuFo2023.jpeg; the caption deliberately describes it only as a team photograph from the original case study, not as an image taken in 2022. Review chronology and team-photo publication preferences before publishing.
 
 ## Open decisions
 

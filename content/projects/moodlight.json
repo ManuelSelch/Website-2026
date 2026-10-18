@@ -4,11 +4,74 @@
   "slug": "moodlight",
   "summary": "A hands-on workshop building a Wi-Fi-controlled RGB light at FabLab Bayreuth.",
   "content": "<p>I helped organize Arduino Day 2023 at FabLab Bayreuth and led the Moodlight workshop.</p><h3>From soldering to control</h3><p>Participants soldered their own light and controlled its LED colour from a phone or computer. The microcontroller can join an existing Wi-Fi network or create its own network for connecting to the light.</p><p>The workshop combines practical electronics with a browser-accessible control interface. The accompanying source material is available in the FabLab Bayreuth repository.</p>",
-  "tags": ["Microcontroller", "Workshop", "Wi-Fi"],
+  "tags": [
+    "Microcontroller",
+    "Workshop",
+    "Wi-Fi"
+  ],
   "featured": false,
-  "gallery": [],
+  "gallery": [
+    {
+      "path": "/2026/10/18/moodlight_uid_6ad497322e3ce.png",
+      "title": "Moodlight",
+      "mime": "image/png",
+      "type": "image",
+      "description": "",
+      "tags": [],
+      "size": 642602,
+      "colors": [
+        "#bfa97a",
+        "#41494d",
+        "#ced1ce",
+        "#6d4e2a",
+        "#886431"
+      ],
+      "width": 750,
+      "height": 544,
+      "_hash": "c2bf2b4e1435a9b45b2c23f81f509f39",
+      "_created": 1792317234,
+      "_modified": 1792317234,
+      "_cby": null,
+      "altText": "moodlight.png",
+      "thumbhash": "101-25-6-29-132-209-108-150-139-114-121-171-112-26-120-117-175-133-251-90-185",
+      "folder": "6acb73eed3de5cd41709f415",
+      "_id": "6ad497327c2d0ac7ec06e488",
+      "name": "moodlight.png",
+      "alt": "Moodlight workshop project",
+      "caption": ""
+    }
+  ],
   "links": {
     "github": "https://github.com/fablab-bayreuth/Moodlight-Workshop",
     "website": "https://fablab-bayreuth.de"
+  },
+  "cover": {
+    "path": "/2026/10/18/moodlight_uid_6ad497322e3ce.png",
+    "title": "Moodlight",
+    "mime": "image/png",
+    "type": "image",
+    "description": "",
+    "tags": [],
+    "size": 642602,
+    "colors": [
+      "#bfa97a",
+      "#41494d",
+      "#ced1ce",
+      "#6d4e2a",
+      "#886431"
+    ],
+    "width": 750,
+    "height": 544,
+    "_hash": "c2bf2b4e1435a9b45b2c23f81f509f39",
+    "_created": 1792317234,
+    "_modified": 1792317234,
+    "_cby": null,
+    "altText": "moodlight.png",
+    "thumbhash": "101-25-6-29-132-209-108-150-139-114-121-171-112-26-120-117-175-133-251-90-185",
+    "folder": "6acb73eed3de5cd41709f415",
+    "_id": "6ad497327c2d0ac7ec06e488",
+    "name": "moodlight.png",
+    "alt": "Moodlight workshop project",
+    "caption": ""
   }
 }

@@ -1,0 +1,51 @@
+{
+  "business-to-go": [
+    { "file": "BusinessToGo01.png", "alt": "Business to Go app interface, first view" },
+    { "file": "BusinessToGo02.png", "alt": "Business to Go app interface, second view" },
+    { "file": "BusinessToGo03.png", "alt": "Business to Go app interface, third view" }
+  ],
+  "odoo-to-go": [
+    { "file": "odooToGo.jpg", "alt": "Odoo to go project overview" },
+    { "file": "odoo_angebote.PNG", "alt": "Offers displayed in Odoo to go" },
+    { "file": "odoo_login.PNG", "alt": "Odoo to go login screen" },
+    { "file": "odoo_menus.PNG", "alt": "Odoo to go module menus" },
+    { "file": "odoo_module.PNG", "alt": "Module records in Odoo to go" }
+  ],
+  "moodlight": [{ "file": "moodlight.png", "alt": "Moodlight workshop project" }],
+  "industrial-robot": [
+    { "file": "industrieroboter.png", "alt": "Industrial robot project" },
+    { "file": "arduino.jpeg", "alt": "Arduino electronics for the industrial robot project" }
+  ],
+  "delivery-robot-2022": [
+    { "file": "logo_robot.png", "alt": "Autonomous Delivery Robot project illustration" },
+    {
+      "file": "021967161628411b8f32662daf7515ac-standfoto.jpg",
+      "alt": "Autonomous Delivery Robot competition exhibit"
+    },
+    {
+      "file": "gruppenbildJuFo2023.jpeg",
+      "alt": "Team photograph included in the original delivery robot case study"
+    }
+  ],
+  "intelligenzbolzen": [
+    { "file": "logo_intelligenzbolzen.png", "alt": "Intelligenzbolzen project logo" },
+    { "file": "intelligenzbolzen_2.png", "alt": "Intelligenzbolzen project view" },
+    { "file": "intelligenzbolzen_3.jpg", "alt": "Intelligenzbolzen project photograph" }
+  ],
+  "heating-control": [
+    { "file": "a_logo_heizung.png", "alt": "Heating Control project logo" },
+    { "file": "Heizung_img1.PNG", "alt": "Heating Control app, first view" },
+    { "file": "Heizung_img2.PNG", "alt": "Heating Control app, second view" },
+    { "file": "Heizung_img3.PNG", "alt": "Heating Control app, third view" }
+  ],
+  "pixelmission": [
+    { "file": "logo_pixelmission.png", "alt": "PixelMission game logo" },
+    { "file": "pixelmission_1.jpg", "alt": "PixelMission game screenshot 1" },
+    { "file": "pixelmission_2.jpg", "alt": "PixelMission game screenshot 2" },
+    { "file": "pixelmission_3.jpg", "alt": "PixelMission game screenshot 3" },
+    { "file": "pixelmission_4.jpg", "alt": "PixelMission game screenshot 4" },
+    { "file": "pixelmission_5.jpg", "alt": "PixelMission game screenshot 5" },
+    { "file": "pixelmission_6.jpg", "alt": "PixelMission game screenshot 6" },
+    { "file": "pixelmission_7.jpg", "alt": "PixelMission game screenshot 7" }
+  ]
+}
