@@ -41,7 +41,7 @@ Continue the existing portfolio into a reliable, English-language personal proje
 - Hero portrait follows approved mockup `mockups/hero-portrait` revision 1: square black-and-white illustration to the right (220–300px) on desktop; below the headline and above the introduction (144px) at widths <=760px. Match its white background to the page; no border, shadow, or animation. Keep the vertical idea/build text and Explore my work link removed.
 - Detail pages use a manual contained-image gallery on the left and content-height cards on the right; mobile order is gallery, details, information. No standalone cover, autoplay, enlargement hint, or zoom; fullscreen keyboard navigation remains.
 - Collection covers, titles and Details links must open their project.
-- Local Cockpit CLI credentials load internally without printing secrets. Publishing requires --publish; updates require --update and an existing _id. Public verification is read-only and sends no API key.
+- Cockpit is the content source of truth; local JSON files are historical/import material. Never resave stale full records. Local CLI credentials load internally without printing secrets. Draft-capable reads and field-scoped updates use fresh revision snapshots, conflict rejection, and pre-change history. Text/media edits preserve publication state; publish/unpublish are separate actions. The prepared authoring addon/route require user installation and live verification before use. Public verification is read-only and sends no API key.
 - A later archive page must list multiple preserved website versions by year/version and link visitors to each original site. Do not replace archived versions with redirects to new case studies.
 
 ## Assumptions

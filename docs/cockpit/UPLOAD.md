@@ -28,12 +28,14 @@ npm run cockpit -- upload /path/to/pi-chat-home.png content/projects/pi-chat-hom
 
 The output file must not already exist. The CLI uploads one image and stores the **complete native Cockpit asset object**, including `_id`, `path`, and `folder`. Native Cockpit assets may have `title`/`altText` instead of `name`; the CLI adds a filename for the project editor. Byte-identical files already present in the projects folder are reused (best-effort deduplication, not a concurrency guarantee). It never displays the key. The endpoint only accepts a single PNG/JPEG/WebP image, up to 10 MiB and 20 megapixels, into the fixed `projects` folder. It does not accept arbitrary folders, remote URLs, executable uploads, replacement or deletion.
 
-Use the returned asset object in the project's `cover` or `gallery` field. Preserve its native metadata; add descriptive `alt`/`caption` as appropriate. Then publish the existing project:
+Attach uploaded assets with the [guarded authoring workflow](README.md), never by resaving a complete local project JSON. Fetch a current CMS snapshot, then submit a patch containing only `cover`/`gallery` and native asset IDs:
 
 ```sh
-npm run cockpit -- save content/projects/pi-chat.json --update --publish
-TEST_BASE_URL=http://127.0.0.1:3016 npm run verify:project -- pi-chat
+npm run cockpit -- get pi-chat .cockpit/pi-chat-v1.json
+npm run cockpit -- set-media .cockpit/pi-chat-v1.json .cockpit/media-patch.json
 ```
+
+Install the [authoring addon and route](AUTHORING.md) first. Media changes preserve text and publication state. Publishing is a separate action using another fresh snapshot; the obsolete `save --update --publish` command is disabled.
 
 ## Updating the initial endpoint
 

@@ -1,36 +1,86 @@
-# Cockpit CLI and project verification
+# Safe Cockpit authoring
 
-Run these commands from the project root.
+**Cockpit is the source of truth.** Local project JSON under `content/projects/` is historical/import material, not a copy to overwrite the CMS with. The old `save` and `find` commands are disabled. Earlier full-project saves overwrote user text during a media import; do not repeat that workflow.
 
-## Local Cockpit CLI
+## Install once
 
-The CLI loads `.env.local` internally without displaying its contents; exported environment variables take precedence. Keep it gitignored and use a dedicated role-scoped `COCKPIT_WRITE_API_KEY`; never a `NEXT_PUBLIC_` write key. Use HTTPS for non-local CMS connections.
+See [AUTHORING.md](AUTHORING.md). The new CLI requires both the PortfolioAuthoring addon and the authenticated authoring API route. Installation/live compatibility verification are pending; no production content was changed while preparing this workflow. The existing [asset upload endpoint](UPLOAD.md) stays separate.
+
+## Everyday workflow
+
+The CLI internally loads `.env.local`; exported variables take precedence. Use `COCKPIT_URL=https://cockpit.manuelselch.de` and a dedicated `COCKPIT_WRITE_API_KEY`, never a `NEXT_PUBLIC_` write key. No keys are printed. Node 22.18+ recommended.
 
 ```sh
-# Requires Node 22.18+; does not change content or prove write permission:
+mkdir -p .cockpit
 npm run cockpit -- check
-
-# Create one draft from a JSON object you have reviewed:
-npm run cockpit -- save content/projects/my-project.json
-
-# Update: include its existing _id, title and slug in the JSON:
-npm run cockpit -- save content/projects/my-project.json --update
+npm run cockpit -- get business-to-go .cockpit/business-v1.json
 ```
 
-`content/projects/example.json` is a template, not real project content. Copy and replace it before importing. Fields follow the [Cockpit project fields table](../../README.md#cockpit-project-fields); existing asset paths can be referenced in `cover` and `gallery`.
+`get` includes drafts and writes a **new** private snapshot with the CMS item and an opaque revision. `.cockpit/` is ignored by Git; files are created with mode 0600. Do not commit draft snapshots/history. It refuses to overwrite existing files.
 
-Saves default to `_state: 0` (draft), even updates of published projects. Add **`--publish`** to explicitly save `_state: 1`; use `--update --publish` for a published update. Check for an existing entry first with `npm run cockpit -- find pi-chat`. The reviewed Pi-Chat entry is in `content/projects/pi-chat.json`; its five screenshots are native Cockpit assets in the root projects folder. Asset JSON receipts in content/projects retain their registered IDs and metadata. Save returns the item ID; retain it in your JSON before updating. Re-running a create without `_id` can create duplicates—there is no automatic upsert by slug. If a request times out or returns an unexpected save response, check Cockpit before retrying.
+### Change only text
 
-The CLI has no delete command. Native asset uploads require the custom endpoint: see [asset-upload installation and usage](UPLOAD.md). `npm run cockpit -- --help` works without loading credentials. Tests use fake credentials and mocked requests, never the real environment file.
+Create a patch containing only the text fields you intend to change:
 
-## Quick published-project verification
+```json
+{"summary":"An updated project summary."}
+```
 
 ```sh
-npm run verify:project -- pi-chat
-# Against another running frontend:
+npm run cockpit -- edit-text .cockpit/business-v1.json .cockpit/text-patch.json
+```
+
+Allowed fields: `title`, `summary`, `content`, `tags`, `links`, `date`. Omit everything not deliberately changed. HTML remains trusted owner-authored content. Slug/featured changes can be made in Cockpit's editor; they are not part of the text command.
+
+### Change only media
+
+Upload images using `upload` as before, then create a media-only patch using native asset IDs:
+
+```json
+{
+  "cover":{"_id":"NATIVE_ASSET_ID","alt":"A meaningful description"},
+  "gallery":[{"_id":"NATIVE_ASSET_ID","alt":"A meaningful description","caption":"Optional caption"}]
+}
+```
+
+```sh
+npm run cockpit -- set-media .cockpit/business-v1.json .cockpit/media-patch.json
+```
+
+Only `cover`/`gallery` are accepted. The server resolves native asset metadata; it does not trust client paths or fetch remote images. `cover:null` clears the cover and `gallery:[]` clears the gallery. Sending a gallery replaces that gallery list; preserve intended existing entries. **Neither media nor text edits change publication state.**
+
+### Conflicts and concurrent editing
+
+Each edit supplies the revision from its original snapshot. If the CMS changed at all, the server returns 409 and nothing from that request is saved. Fetch a new snapshot into a new file, review changes and recreate the small patch. There is no automatic retry, merge or force-overwrite flag. Fetch another snapshot after every successful edit.
+
+The addon hooks editor saves as well as agent saves: the revision comparison and write occur under a shared server lock, and a complete pre-change record is retained in private storage. **Cockpit's existing browser form does not submit this revision token.** A stale already-open form can still overwrite later agent edits if the human saves it afterwards. Until the editor is enhanced, finish/save/close the form before an agent edit, and reload it before saving after an agent edit. The addon cannot infer intent from a stale full editor payload.
+
+### Create and publish separately
+
+```sh
+npm run cockpit -- create .cockpit/new-project.json
+npm run cockpit -- get my-project .cockpit/my-project-v1.json
+npm run cockpit -- publish .cockpit/my-project-v1.json
+# Or explicitly unpublish using another fresh snapshot:
+npm run cockpit -- unpublish .cockpit/my-project-v2.json
+```
+
+`create` accepts a new project with title/slug but no `_id`, `_state` or revision, always creates a draft, and rejects duplicate slugs. `publish`/`unpublish` accept only a snapshot; publishing cannot silently accompany text/media changes. If a write times out, fetch current state and inspect history before retrying: a response error does not prove the save failed.
+
+### Inspect history
+
+```sh
+npm run cockpit -- history business-to-go .cockpit/business-history.json
+```
+
+Returns the latest 20 records, including the full `before` snapshot. A history entry marked `attempt` may correspond to an interrupted/failed save; inspect current state before deciding what to restore. Restore selected fields through a fresh guarded patch or manually through the editor, never blindly replay a whole old record. History starts only when the addon is installed; it cannot recover earlier overwritten text. Back up Cockpit storage/configuration independently.
+
+## Published-project verification
+
+```sh
 TEST_BASE_URL=http://127.0.0.1:3016 npm run verify:project -- pi-chat
 ```
 
-Requires a running website (defaults to port 3000), a matching `content/projects/<slug>.json`, and Playwright/Chromium. Resolves Playwright from the project, `PLAYWRIGHT_MODULE`, or the existing pi-browser-debug installation. Uses `.env.local` for the CMS URL but **never sends an API key**. Checks unique public publication, content/links/gallery/cover/featured fidelity, image loading, collection-cover navigation, fullscreen open/close, mobile overflow, browser errors and featured homepage placement. Retries up to six times at ten-second intervals for revalidation; each browser/request check has its own timeout. Prints PASS/FAIL and exits nonzero on failure, without writing to Cockpit.
+This is read-only and sends no key. It compares the published CMS entry against local expected JSON, checks native assets and browser rendering/navigation. If someone edited content in Cockpit, the historical local JSON may intentionally differ; review/export the current CMS content before using strict fidelity verification. A mismatch does not authorize restoring the old file.
 
-The projects model needs a Boolean `featured` field. If verification reports a mismatch, configure the field in Cockpit's UI and save the entry again through the CLI. Pi-Chat's published content and featured homepage placement have been verified. Model configuration must use Cockpit's UI when the API does not support it; do not access Cockpit through Docker.
+Never access Cockpit through Docker. Unsupported server installation/configuration is performed by the user.

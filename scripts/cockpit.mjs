@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { readFile } from 'node:fs/promises'
+import { readFile, writeFile } from 'node:fs/promises'
 import { loadLocalEnv } from './local-env.mjs'
 import { uploadImage } from './cockpit-upload.mjs'
 import { resolve } from 'node:path'
@@ -7,54 +7,49 @@ import { pathToFileURL } from 'node:url'
 
 const usage = `Usage:
   npm run cockpit -- check
-  npm run cockpit -- save project.json
-  npm run cockpit -- save project.json --update
-  npm run cockpit -- save project.json --publish
-  npm run cockpit -- find pi-chat
-  npm run cockpit -- upload image.png asset.json
+  npm run cockpit -- get <slug> <new-snapshot.json>
+  npm run cockpit -- create <new-project.json>
+  npm run cockpit -- set-media <snapshot.json> <media-patch.json>
+  npm run cockpit -- edit-text <snapshot.json> <text-patch.json>
+  npm run cockpit -- publish <snapshot.json>
+  npm run cockpit -- unpublish <snapshot.json>
+  npm run cockpit -- history <slug> <new-history.json>
+  npm run cockpit -- upload <image.png> <new-asset.json>
 
-Requires COCKPIT_WRITE_API_KEY. Uses COCKPIT_URL (or NEXT_PUBLIC_COCKPIT_URL),
-falling back to http://localhost:8080. Node 22.18+ recommended.
-
-save accepts one project JSON object with title and slug. Defaults to a draft
-(_state: 0); --publish explicitly publishes (_state: 1).
-Existing _id requires --update; combine --update --publish to keep it published.
-No deletion or automatic upsert by slug. find checks existing entries.
-Upload needs the custom portfolio endpoint installed; writes into the projects folder.
-check verifies read access only, not write permissions.
-The CLI loads .env.local internally without displaying it. Exported variables take precedence.`
+Cockpit is the source of truth. Install the PortfolioAuthoring addon and API route first.
+Fetch a fresh snapshot before editing; updates send only explicit fields and its revision.
+A conflict aborts; no retries, automatic merges, or full-project replacement.
+create always creates a draft; publish/unpublish are separate explicit actions.
+Snapshots/history are private local files. Output files must not already exist.
+Requires COCKPIT_WRITE_API_KEY. COCKPIT_URL selects the server.
+.env.local is loaded internally; exported variables take precedence.`
+const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+const textFields = ['title', 'summary', 'content', 'tags', 'links', 'date']
+const mediaFields = ['cover', 'gallery']
+const object = value => value && typeof value === 'object' && !Array.isArray(value)
 
 export async function run(args, dependencies = {}) {
   const env = dependencies.env || process.env
   const request = dependencies.fetch || globalThis.fetch
   const read = dependencies.readFile || readFile
+  const write = dependencies.writeFile || writeFile
   const log = dependencies.log || console.log
-  if (args.length === 0 || (args.length === 1 && ['--help', 'help'].includes(args[0]))) {
+  const [command, first, second] = args
+  if (!args.length || (args.length === 1 && ['help', '--help'].includes(command))) {
     log(usage)
     return
   }
-  const [command, file, ...flags] = args
-  const updating = flags.includes('--update')
-  const publishing = flags.includes('--publish')
-  if (
-    !(
-      (command === 'check' && args.length === 1) ||
-      (command === 'upload' &&
-        args.length === 3 &&
-        file &&
-        flags[0] &&
-        !file.startsWith('--') &&
-        !flags[0].startsWith('--')) ||
-      (command === 'find' && args.length === 2 && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(file)) ||
-      (command === 'save' &&
-        file &&
-        !file.startsWith('--') &&
-        flags.every(flag => ['--update', '--publish'].includes(flag)) &&
-        new Set(flags).size === flags.length)
+  if (['save', 'find'].includes(command))
+    throw new Error(
+      'Full-project save/find is disabled. Use get and field-scoped edits; publishing is separate.',
     )
-  ) {
+  const valid =
+    (command === 'check' && args.length === 1) ||
+    (['get', 'history'].includes(command) && args.length === 3 && slugPattern.test(first)) ||
+    (['create', 'publish', 'unpublish'].includes(command) && args.length === 2) ||
+    (['set-media', 'edit-text', 'upload'].includes(command) && args.length === 3)
+  if (!valid || args.slice(1).some(value => !value || value.startsWith('--')))
     throw new Error(usage)
-  }
   const key = env.COCKPIT_WRITE_API_KEY
   if (!key?.trim()) throw new Error('Set COCKPIT_WRITE_API_KEY in your local environment.')
   let base
@@ -67,83 +62,108 @@ export async function run(args, dependencies = {}) {
       base.search ||
       base.hash
     )
-      throw new Error()
+      throw Error()
     base.pathname = base.pathname.replace(/\/$/, '') + '/'
   } catch {
     throw new Error('Cockpit URL must be HTTP(S), without credentials, query or fragment.')
   }
-
-  if (command === 'upload') return uploadImage(base, key, file, flags[0], dependencies)
-
-  let data
-  if (command === 'save') {
+  if (command === 'upload') return uploadImage(base, key, first, second, dependencies)
+  const readJson = async file => {
     try {
-      data = JSON.parse(await read(file, 'utf8'))
+      return JSON.parse(await read(file, 'utf8'))
     } catch {
-      throw new Error('Unable to read valid project JSON.')
+      throw new Error('Unable to read valid authoring JSON.')
     }
+  }
+  let payload = { action: command }
+  if (['get', 'history'].includes(command)) payload.slug = first
+  if (command === 'create') {
+    const data = await readJson(first)
+    const allowed = ['title', 'slug', ...textFields, ...mediaFields, 'featured']
     if (
-      !data ||
-      typeof data !== 'object' ||
-      Array.isArray(data) ||
+      !object(data) ||
       typeof data.title !== 'string' ||
       !data.title.trim() ||
-      typeof data.slug !== 'string' ||
-      !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(data.slug)
-    ) {
-      throw new Error('Project JSON must be an object with a title and lowercase hyphenated slug.')
-    }
-    if (Object.hasOwn(data, '_id') && (typeof data._id !== 'string' || !data._id.trim())) {
-      throw new Error('Existing _id must be a nonempty string.')
-    }
-    if (data._id && !updating)
-      throw new Error('Existing _id requires --update (saves as draft and unpublishes the item).')
-    if (updating && !data._id) throw new Error('--update requires an existing _id.')
-    data = { ...data, _state: publishing ? 1 : 0 }
+      !slugPattern.test(data.slug || '') ||
+      Object.keys(data).some(key => !allowed.includes(key))
+    )
+      throw new Error('Create accepts a new project only: no _id, _state or revision.')
+    payload.data = data
   }
-  const url = new URL(
-    command !== 'save' ? 'api/content/items/projects' : 'api/content/item/projects',
-    base,
-  )
-  if (command === 'check') url.searchParams.set('limit', '1')
-  if (command === 'find') url.searchParams.set('filter', JSON.stringify({ slug: file }))
+  if (['set-media', 'edit-text', 'publish', 'unpublish'].includes(command)) {
+    const snapshot = await readJson(first)
+    if (
+      !object(snapshot?.item) ||
+      typeof snapshot.item._id !== 'string' ||
+      !snapshot.item._id ||
+      !/^[a-f0-9]{64}$/.test(snapshot.revision || '')
+    )
+      throw new Error('Invalid snapshot. Fetch a fresh snapshot with get first.')
+    payload = { ...payload, id: snapshot.item._id, revision: snapshot.revision }
+    if (second) {
+      const patch = await readJson(second)
+      const allowed = command === 'set-media' ? mediaFields : textFields
+      if (
+        !object(patch) ||
+        !Object.keys(patch).length ||
+        Object.keys(patch).some(field => !allowed.includes(field))
+      )
+        throw new Error(
+          'Patch contains empty or disallowed fields; use only the requested field group.',
+        )
+      payload.patch = patch
+    }
+  }
   let response
   try {
-    response = await request(url, {
-      method: command !== 'save' ? 'GET' : 'POST',
+    response = await request(new URL('api/portfolio/authoring', base), {
+      method: 'POST',
       headers: { 'api-key': key, 'Content-Type': 'application/json' },
-      ...(data ? { body: JSON.stringify({ data }) } : {}),
+      body: JSON.stringify(payload),
       redirect: 'error',
       signal: AbortSignal.timeout(15000),
     })
   } catch {
     throw new Error('Cockpit request failed or timed out.')
   }
+  if (response.status === 409)
+    throw new Error(
+      'CMS content changed or slug exists. Fetch a fresh snapshot and review before retrying.',
+    )
   if (!response.ok) throw new Error(`Cockpit request failed (HTTP ${response.status}).`)
   let result
   try {
     result = await response.json()
   } catch {
-    throw new Error('Cockpit returned invalid JSON; check CMS before retrying a save.')
+    throw new Error('Invalid Cockpit response; check CMS before retrying a write.')
   }
-  if (command !== 'save') {
-    if (!Array.isArray(result) && !Array.isArray(result?.entries))
-      throw new Error('Cockpit returned an unexpected projects response.')
-    if (command === 'check')
-      log('Projects read succeeded. Write permissions have not been tested. No content changed.')
-    else {
-      const entries = Array.isArray(result) ? result : result.entries
-      const matches = entries
-        .filter(item => item.slug === file)
-        .map(item => ({ _id: item._id, slug: item.slug, _state: item._state }))
-      log(JSON.stringify(matches).replaceAll(key, '[redacted]'))
+  if (['get', 'history'].includes(command)) {
+    if (
+      command === 'get' &&
+      (!object(result?.item) ||
+        typeof result.item._id !== 'string' ||
+        !/^[a-f0-9]{64}$/.test(result.revision || ''))
+    )
+      throw new Error('Unexpected authoring snapshot response.')
+    if (command === 'history' && !Array.isArray(result?.history))
+      throw new Error('Unexpected history response.')
+    const json = JSON.stringify(result, null, 2)
+    if (json.includes(key))
+      throw new Error('Unexpected credential in response; refusing to save it.')
+    try {
+      await write(second, json + '\n', { flag: 'wx', mode: 0o600 })
+    } catch {
+      throw new Error('Could not save output; choose a new file in an existing private directory.')
     }
+    log('Private authoring snapshot/history saved. Do not commit it.')
   } else {
-    if (typeof result?._id !== 'string')
-      throw new Error('Unexpected save response; check CMS before retrying.')
-    // Never print API response bodies or user-controlled content, which may contain secrets.
-    const id = result._id.replaceAll(key, '[redacted]').replace(/[\r\n\x1b]/g, '')
-    log(`Project saved as ${publishing ? 'published' : 'draft'}. Item ID: ${id}`)
+    if (command !== 'check' && !object(result?.item) && result?.ok !== true)
+      throw new Error('Unexpected write response; check CMS before retrying.')
+    log(
+      command === 'check'
+        ? 'Authoring endpoint ready. No content changed.'
+        : 'Requested fields saved. Fetch a new snapshot before the next edit.',
+    )
   }
 }
 
